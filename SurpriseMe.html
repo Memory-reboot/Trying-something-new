@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Media Viewer</title>
+<style>
+  html, body {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    width: 100%;
+    height: 100%;
+    background: #000;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  }
+
+  .stage-frame {
+    display: block;
+    width: 100%;
+    height: 100vh;
+    border: none;
+  }
+
+  .control-panel {
+    position: fixed;
+    top: 16px;
+    left: 16px;
+    z-index: 9999;
+    width: 52px;
+    height: 52px;
+    padding: 3px;
+    border-radius: 50%;
+    background: linear-gradient(130deg, #ff5f9e, #ff9f5f, #ffe45f, #5fffb0, #5fc9ff, #b05fff, #ff5f9e);
+    background-size: 300% 300%;
+    animation: gradientShift 5s ease infinite, panelGlow 2.2s ease-in-out infinite;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+  }
+
+  .control-panel.is-playing {
+    animation: gradientShift 5s ease infinite;
+  }
+
+  @keyframes gradientShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
+  @keyframes panelGlow {
+    0%, 100% {
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35), 0 0 0 0 rgba(255, 160, 220, 0.5);
+    }
+    50% {
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35), 0 0 0 9px rgba(255, 160, 220, 0);
+    }
+  }
+
+  .control-panel button {
+    appearance: none;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    color: #fff;
+    background: rgba(15, 15, 20, 0.65);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border-radius: 50%;
+    transition: background 0.2s ease, transform 0.1s ease;
+  }
+
+  .control-panel button svg {
+    width: 19px;
+    height: 19px;
+    fill: #fff;
+  }
+
+  .control-panel button:hover {
+    background: rgba(35, 35, 42, 0.7);
+  }
+
+  .control-panel button:active {
+    transform: scale(0.92);
+  }
+
+  /* Genz-style animated equalizer bars shown while audio is playing/unmuted */
+  .equalizer {
+    display: none;
+    align-items: flex-end;
+    justify-content: center;
+    gap: 3px;
+    width: 19px;
+    height: 19px;
+  }
+
+  .equalizer.show {
+    display: flex;
+  }
+
+  .equalizer span {
+    display: block;
+    width: 3px;
+    border-radius: 2px;
+    background: linear-gradient(180deg, #ff9f5f, #5fc9ff);
+    animation: eqBounce 0.9s ease-in-out infinite;
+  }
+
+  .equalizer span:nth-child(1) { height: 40%; animation-delay: 0s; }
+  .equalizer span:nth-child(2) { height: 100%; animation-delay: 0.15s; }
+  .equalizer span:nth-child(3) { height: 65%; animation-delay: 0.3s; }
+  .equalizer span:nth-child(4) { height: 85%; animation-delay: 0.1s; }
+
+  @keyframes eqBounce {
+    0%, 100% { transform: scaleY(0.35); }
+    50% { transform: scaleY(1); }
+  }
+
+  .audio-hint {
+    position: fixed;
+    top: 16px;
+    left: 76px;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 9px 14px;
+    font-size: 13px;
+    font-weight: 500;
+    color: #fff;
+    white-space: nowrap;
+    background: rgba(20, 20, 20, 0.55);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid rgba(255, 215, 150, 0.3);
+    border-radius: 999px;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3);
+    animation: hintBounce 1.8s ease-in-out infinite;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+  }
+
+  .audio-hint.show {
+    opacity: 1;
+  }
+
+  .audio-hint.hide {
+    opacity: 0;
+    transition: opacity 0.5s ease;
+  }
+
+  @keyframes hintBounce {
+    0%, 100% { transform: translateX(0); }
+    50% { transform: translateX(4px); }
+  }
+</style>
+</head>
+<body>
+
+  <!-- Floating control panel, pinned top-left: mute/unmute icon only -->
+  <div class="control-panel" id="controlPanel">
+    <button id="muteBtn" type="button" aria-label="Unmute" title="Unmute">
+      <svg id="iconMuted" viewBox="0 0 24 24"><path d="M16.5 12A4.5 4.5 0 0 0 14 7.97v2.21l2.45 2.45c.03-.2.05-.42.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51A8.796 8.796 0 0 0 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3 3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06a8.99 8.99 0 0 0 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4 9.91 6.09 12 8.18V4z"/></svg>
+      <span id="iconEqualizer" class="equalizer">
+        <span></span><span></span><span></span><span></span>
+      </span>
+    </button>
+  </div>
+  <div class="audio-hint" id="audioHint">✨ Tap for the full experience</div>
+
+  <!-- Full-screen embedded document/media viewer -->
+  <iframe
+    class="stage-frame"
+    src="https://drive.google.com/file/d/1lhX260zcaRPNgR3TrYRi6dnOUa3Ymr-B/preview"
+    allow="autoplay; fullscreen"
+    allowfullscreen>
+  </iframe>
+
+  <!-- Hidden background audio track -->
+  <audio id="bgAudio" loop preload="auto" style="display:none;">
+    <source src="https://raw.githubusercontent.com/Memory-reboot/Trying-something-new/main/Sousou%20no%20Frieren%20Ending%20_%20milet%20-%20Anytime%20Anywhere%20(Instrumental)(MP3_160K).mp3" type="audio/mpeg">
+  </audio>
+
+  <script>
+    (function () {
+      const audio = document.getElementById('bgAudio');
+      const muteBtn = document.getElementById('muteBtn');
+      const iconMuted = document.getElementById('iconMuted');
+      const iconEqualizer = document.getElementById('iconEqualizer');
+      const controlPanel = document.getElementById('controlPanel');
+      const audioHint = document.getElementById('audioHint');
+
+      // Audio starts muted so the browser will allow it to autoplay silently.
+      audio.muted = true;
+
+      function updateIcon() {
+        const isMuted = audio.muted || audio.paused;
+        iconMuted.style.display = isMuted ? 'block' : 'none';
+        iconEqualizer.classList.toggle('show', !isMuted);
+        muteBtn.setAttribute('aria-label', isMuted ? 'Unmute' : 'Mute');
+        muteBtn.setAttribute('title', isMuted ? 'Unmute' : 'Mute');
+      }
+
+      // Attempt a silent autoplay as soon as the page loads so the loop
+      // is already running in the background; the user just unmutes it.
+      function attemptSilentAutoplay() {
+        const playPromise = audio.play();
+        if (playPromise !== undefined) {
+          playPromise.catch(function (err) {
+            // Autoplay was blocked entirely (even muted). It will start
+            // on the first user click of the icon instead.
+            console.warn('Silent autoplay was blocked by the browser:', err);
+          });
+        }
+      }
+      attemptSilentAutoplay();
+
+      // Nudge the visitor toward the button shortly after the page loads.
+      setTimeout(function () {
+        audioHint.classList.add('show');
+      }, 900);
+
+      function dismissHint() {
+        audioHint.classList.remove('show');
+        audioHint.classList.add('hide');
+      }
+
+      muteBtn.addEventListener('click', function () {
+        audio.muted = !audio.muted;
+
+        if (audio.paused) {
+          const playPromise = audio.play();
+          if (playPromise !== undefined) {
+            playPromise.catch(function (err) {
+              console.warn('Playback was prevented by the browser:', err);
+            });
+          }
+        }
+
+        if (!audio.muted) {
+          controlPanel.classList.add('is-playing');
+          dismissHint();
+        } else {
+          controlPanel.classList.remove('is-playing');
+        }
+
+        updateIcon();
+      });
+
+      updateIcon();
+    })();
+  </script>
+
+</body>
+</html>
