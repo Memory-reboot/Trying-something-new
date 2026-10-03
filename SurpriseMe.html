@@ -2,441 +2,488 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Pika</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Happy Birthday 🎂</title>
 <style>
-  html, body {
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
-    width: 100%;
-    height: 100%;
-    background: #000;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  :root { 
+    --edge: rgba(255, 200, 230, 0.28); 
+    --pink-glow: #ffb3d9;
+    --gold-glow: #ffe27a;
+    --purple-accent: #c76fd6;
+  }
+  
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  
+  html { 
+    background: linear-gradient(160deg, #2a1230, #4a1d4a 45%, #7a2f5e) fixed; 
+    scroll-behavior: smooth; 
+  }
+  
+  body { 
+    min-height: 100vh; 
+    color: #fff; 
+    overflow-x: hidden;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
+  }
+  
+  body.locked { 
+    overflow: hidden; 
+    height: 100vh; 
+  }
+  
+  html, body, a, button, input {
+    cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 28 28'%3E%3Cg transform='translate(14 14)'%3E%3Cg fill='%23bfe3ff' stroke='%236aa7d8' stroke-width='.8'%3E%3Cellipse cy='-7' rx='4' ry='6'/%3E%3Cellipse cy='-7' rx='4' ry='6' transform='rotate(72)'/%3E%3Cellipse cy='-7' rx='4' ry='6' transform='rotate(144)'/%3E%3Cellipse cy='-7' rx='4' ry='6' transform='rotate(216)'/%3E%3Cellipse cy='-7' rx='4' ry='6' transform='rotate(288)'/%3E%3C/g%3E%3Ccircle r='3' fill='%23ffe08a'/%3E%3C/g%3E%3C/svg%3E") 14 14, auto;
   }
 
-  .stage-frame {
-    display: block;
-    width: 100%;
-    height: 100vh;
-    border: none;
+  #wa, #fl { position: fixed; inset: 0; pointer-events: none; }
+  #wa { z-index: 0; opacity: 0.13; }
+  #fl { z-index: 3; overflow: hidden; }
+  
+  .fx { 
+    position: absolute; 
+    top: -40px; 
+    opacity: 0; 
+    animation: fall linear infinite; 
+  }
+  
+  @keyframes fall {
+    0% { transform: translate(0, -5vh) rotate(0deg); opacity: 0; }
+    10%, 90% { opacity: 0.85; }
+    50% { transform: translate(var(--s), 50vh) rotate(180deg); }
+    100% { transform: translate(calc(var(--s) * -1), 108vh) rotate(360deg); opacity: 0; }
   }
 
-  .control-panel {
-    position: fixed;
-    top: 16px;
-    left: 16px;
-    z-index: 9999;
-    width: 52px;
-    height: 52px;
-    padding: 3px;
-    border-radius: 50%;
-    background: linear-gradient(130deg, #ff5f9e, #ff9f5f, #ffe45f, #5fffb0, #5fc9ff, #b05fff, #ff5f9e);
-    background-size: 300% 300%;
-    animation: gradientShift 5s ease infinite, panelGlow 2.2s ease-in-out infinite;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
-  }
-
-  .control-panel.is-playing {
-    animation: gradientShift 5s ease infinite;
-  }
-
-  @keyframes gradientShift {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
-  }
-
-  @keyframes panelGlow {
-    0%, 100% {
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35), 0 0 0 0 rgba(255, 160, 220, 0.5);
-    }
-    50% {
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35), 0 0 0 9px rgba(255, 160, 220, 0);
-    }
-  }
-
-  .control-panel button {
-    appearance: none;
-    border: none;
-    outline: none;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
+  #lock { 
+    position: fixed; 
+    inset: 0; 
+    z-index: 100; 
+    display: flex; 
+    align-items: center; 
     justify-content: center;
-    width: 100%;
-    height: 100%;
-    padding: 0;
-    color: #fff;
-    background: rgba(15, 15, 20, 0.65);
-    backdrop-filter: blur(14px);
-    -webkit-backdrop-filter: blur(14px);
-    border-radius: 50%;
-    transition: background 0.2s ease, transform 0.1s ease;
+    background: #1c0b22 url('https://raw.githubusercontent.com/Memory-reboot/Trying-something-new/main/36541d69dbe149931eed945876bccfae.jpg') center / cover;
+    transition: opacity 0.7s ease, visibility 0.7s ease; 
   }
-
-  .control-panel button svg {
-    width: 19px;
-    height: 19px;
-    fill: #fff;
+  
+  #lock.open { 
+    opacity: 0; 
+    visibility: hidden; 
+    pointer-events: none; 
   }
-
-  .control-panel button:hover {
-    background: rgba(35, 35, 42, 0.7);
-  }
-
-  .control-panel button:active {
-    transform: scale(0.92);
-  }
-
-  /* Genz-style animated equalizer bars shown while audio is playing/unmuted */
-  .equalizer {
-    display: none;
-    align-items: flex-end;
-    justify-content: center;
-    gap: 3px;
-    width: 19px;
-    height: 19px;
-  }
-
-  .equalizer.show {
-    display: flex;
-  }
-
-  .equalizer span {
-    display: block;
-    width: 3px;
-    border-radius: 2px;
-    background: linear-gradient(180deg, #ff9f5f, #5fc9ff);
-    animation: eqBounce 0.9s ease-in-out infinite;
-  }
-
-  .equalizer span:nth-child(1) { height: 40%; animation-delay: 0s; }
-  .equalizer span:nth-child(2) { height: 100%; animation-delay: 0.15s; }
-  .equalizer span:nth-child(3) { height: 65%; animation-delay: 0.3s; }
-  .equalizer span:nth-child(4) { height: 85%; animation-delay: 0.1s; }
-
-  @keyframes eqBounce {
-    0%, 100% { transform: scaleY(0.35); }
-    50% { transform: scaleY(1); }
-  }
-
-  .audio-hint {
-    position: fixed;
-    top: 16px;
-    left: 76px;
-    z-index: 9999;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    padding: 9px 14px;
-    font-size: 13px;
-    font-weight: 500;
-    color: #fff;
-    white-space: nowrap;
-    background: rgba(20, 20, 20, 0.55);
-    backdrop-filter: blur(14px);
-    -webkit-backdrop-filter: blur(14px);
-    border: 1px solid rgba(255, 215, 150, 0.3);
-    border-radius: 999px;
-    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3);
-    animation: hintBounce 1.8s ease-in-out infinite;
-    pointer-events: none;
-    opacity: 0;
-    transition: opacity 0.4s ease;
-  }
-
-  .audio-hint.show {
-    opacity: 1;
-  }
-
-  .audio-hint.hide {
-    opacity: 0;
-    transition: opacity 0.5s ease;
-  }
-
-  @keyframes hintBounce {
-    0%, 100% { transform: translateX(0); }
-    50% { transform: translateX(4px); }
-  }
-
-  .lock-screen {
-    position: fixed;
-    inset: 0;
-    z-index: 10000;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-image: url('https://raw.githubusercontent.com/Memory-reboot/Trying-something-new/main/36541d69dbe149931eed945876bccfae.jpg');
-    background-size: cover;
-    background-position: center;
-    transition: opacity 0.6s ease, visibility 0.6s ease;
-  }
-
-  .lock-screen.unlocked {
-    opacity: 0;
-    visibility: hidden;
-    pointer-events: none;
-  }
-
-  .lock-card {
-    width: min(320px, 84vw);
-    padding: 32px 26px;
-    text-align: center;
-    background: rgba(40, 15, 30, 0.35);
-    backdrop-filter: blur(18px);
-    -webkit-backdrop-filter: blur(18px);
-    border: 1px solid rgba(255, 190, 170, 0.3);
+  
+  #lc { 
+    width: min(320px, 84vw); 
+    padding: 32px 26px; 
+    text-align: center; 
+    border: 1px solid var(--edge); 
     border-radius: 20px;
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
-    opacity: 0;
-    transform: translateY(28px) scale(0.88);
-    filter: blur(10px);
-    pointer-events: none;
+    background: rgba(40, 15, 30, 0.35); 
+    backdrop-filter: blur(18px); 
+    -webkit-backdrop-filter: blur(18px);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5); 
+    opacity: 0; 
+    transform: translateY(28px) scale(0.88); 
+    filter: blur(10px); 
+    pointer-events: none; 
   }
-
-  .lock-card.reveal {
-    animation: cardPopIn 0.85s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-    pointer-events: auto;
+  
+  #lc.show { 
+    animation: pop 0.85s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; 
+    pointer-events: auto; 
   }
-
-  @keyframes cardPopIn {
-    0% {
-      opacity: 0;
-      transform: translateY(28px) scale(0.88);
-      filter: blur(10px);
-    }
-    55% {
-      opacity: 1;
-      transform: translateY(-6px) scale(1.03);
-      filter: blur(0);
-    }
-    100% {
-      opacity: 1;
-      transform: translateY(0) scale(1);
-      filter: blur(0);
-    }
+  
+  #lc.show.shake { 
+    animation: pop 0.01s forwards, shake 0.4s ease-in-out; 
   }
-
-  .lock-icon {
-    font-size: 30px;
-    margin-bottom: 10px;
+  
+  @keyframes pop { 
+    55% { opacity: 1; transform: translateY(-6px) scale(1.03); filter: blur(0); } 
+    100% { opacity: 1; transform: none; filter: blur(0); } 
   }
-
-  .lock-title {
+  
+  @keyframes shake { 
+    25% { transform: translateX(-8px); } 
+    75% { transform: translateX(8px); } 
+  }
+  
+  #lc .ic { font-size: 32px; margin-bottom: 10px; }
+  #lc .tt { font-size: 16px; font-weight: 600; margin-bottom: 18px; text-shadow: 0 2px 10px rgba(0, 0, 0, 0.4); }
+  
+  #inp { 
+    width: 100%; 
+    padding: 12px 14px; 
+    margin-bottom: 14px; 
+    font-size: 16px; 
+    letter-spacing: 1px; 
+    text-align: center; 
     color: #fff;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    font-size: 16px;
-    font-weight: 600;
-    margin-bottom: 18px;
-    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+    background: rgba(255, 255, 255, 0.1); 
+    border: 1px solid rgba(255, 190, 170, 0.35); 
+    border-radius: 10px; 
+    outline: none; 
+    transition: border-color 0.2s;
   }
-
-  .lock-input {
-    width: 100%;
-    box-sizing: border-box;
-    padding: 12px 14px;
-    font-size: 15px;
-    letter-spacing: 1px;
-    text-align: center;
-    color: #fff;
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 190, 170, 0.35);
+  
+  #inp::placeholder { color: rgba(255, 255, 255, 0.6); }
+  #inp:focus { border-color: rgba(255, 160, 140, 0.8); }
+  
+  #go { 
+    width: 100%; 
+    padding: 12px; 
+    font-size: 14px; 
+    font-weight: 600; 
+    color: #fff; 
+    border: none; 
     border-radius: 10px;
-    outline: none;
-    margin-bottom: 14px;
-    transition: border-color 0.2s ease;
+    background: linear-gradient(130deg, #ff6f61, #ff9f5f, #c76fd6, #6f7fd6) 0 50% / 200% 200%; 
+    animation: gs 5s ease infinite; 
+    transition: transform 0.1s; 
+  }
+  
+  #go:active { transform: scale(0.97); }
+  @keyframes gs { 50% { background-position: 100% 50%; } }
+  #err { margin-top: 12px; min-height: 16px; font-size: 12.5px; color: #ffb0a8; }
+
+  .page { 
+    position: relative; 
+    z-index: 2; 
+    max-width: 640px; 
+    margin: 0 auto; 
+    display: flex; 
+    flex-direction: column; 
+    gap: 22px;
+    padding: max(36px, env(safe-area-inset-top)) clamp(22px, 7vw, 40px) 90px; 
+  }
+  
+  .hero { text-align: center; padding-top: 56px; }
+  
+  .chip { 
+    display: inline-block; 
+    padding: 7px 14px; 
+    font-size: 13px; 
+    border: 1px solid var(--edge); 
+    border-radius: 99px;
+    background: rgba(255, 255, 255, 0.08); 
+    backdrop-filter: blur(10px); 
+    -webkit-backdrop-filter: blur(10px); 
+  }
+  
+  h1 { 
+    margin: 18px 0 8px; 
+    font-size: clamp(2.5rem, 12vw, 4.4rem); 
+    line-height: 1.05; 
+    font-weight: 800; 
+    letter-spacing: -0.02em;
+    background: linear-gradient(120deg, var(--pink-glow), var(--gold-glow), #8fd3ff, #c3a6ff, var(--pink-glow)) 0 0 / 300% 100%;
+    -webkit-background-clip: text; 
+    background-clip: text; 
+    color: transparent; 
+    animation: shine 6s linear infinite; 
+  }
+  
+  @keyframes shine { to { background-position: 300% 0; } }
+  .nm { font-size: clamp(1.2rem, 5.5vw, 1.8rem); opacity: 0.92; }
+  
+  .glass { 
+    padding: 24px 22px; 
+    border: 1px solid var(--edge); 
+    border-radius: 22px; 
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(14px); 
+    -webkit-backdrop-filter: blur(14px); 
+    box-shadow: 0 14px 40px rgba(0, 0, 0, 0.3); 
   }
 
-  .lock-input::placeholder {
-    color: rgba(255, 255, 255, 0.6);
+  .wish { 
+    margin: 0; 
+    font-size: clamp(1rem, 3.9vw, 1.15rem); 
+    line-height: 1.75; 
+    color: rgba(255, 255, 255, 0.92); 
   }
 
-  .lock-input:focus {
-    border-color: rgba(255, 160, 140, 0.7);
+  .video-container { 
+    position: relative; 
+    aspect-ratio: 16/9; 
+    overflow: hidden; 
+    border-radius: 16px; 
+    background: #000;
+    border: 1px solid var(--edge); 
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+  }
+  
+  .video-container video { 
+    width: 100%; 
+    height: 100%; 
+    display: block;
+    object-fit: cover;
   }
 
-  .lock-btn {
-    width: 100%;
-    padding: 12px;
-    font-size: 14px;
+  .lyrics-box { 
+    margin-top: 20px; 
+    padding: 24px 20px; 
+    border-radius: 18px; 
+    text-align: center; 
+    min-height: 100px;
+    background: rgba(15, 5, 20, 0.45); 
+    border: 1px solid var(--edge); 
+    display: flex; 
+    flex-direction: column;
+    justify-content: center; 
+    align-items: center; 
+    backdrop-filter: blur(12px);
+    box-shadow: inset 0 0 20px rgba(255, 179, 217, 0.08);
+  }
+  
+  .lyrics-tag { 
+    font-size: 11px; 
+    letter-spacing: 0.18em; 
+    text-transform: uppercase; 
+    opacity: 0.7; 
+    margin-bottom: 10px; 
+    color: var(--pink-glow);
     font-weight: 600;
-    color: #fff;
-    cursor: pointer;
-    border: none;
-    border-radius: 10px;
-    background: linear-gradient(130deg, #ff6f61, #ff9f5f, #c76fd6, #6f7fd6);
-    background-size: 200% 200%;
-    animation: gradientShift 5s ease infinite;
-    transition: transform 0.1s ease;
+  }
+  
+  #line { 
+    font-size: clamp(1.15rem, 4.8vw, 1.45rem); 
+    font-weight: 700; 
+    line-height: 1.4;
+    background: linear-gradient(120deg, #ffffff, var(--pink-glow), #bfe3ff); 
+    -webkit-background-clip: text; 
+    background-clip: text;
+    color: transparent; 
+    opacity: 0; 
+    transform: translateY(14px) scale(0.92); 
+    filter: blur(6px);
+    transition: all 0.45s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+    text-shadow: 0 0 20px rgba(255, 179, 217, 0.2);
+  }
+  
+  #line.active { 
+    opacity: 1; 
+    transform: translateY(0) scale(1); 
+    filter: blur(0); 
   }
 
-  .lock-btn:active {
-    transform: scale(0.97);
+  .drive { 
+    display: block; 
+    position: relative; 
+    overflow: hidden; 
+    aspect-ratio: 16/10; 
+    border: 1px solid var(--edge); 
+    border-radius: 22px;
+    color: #fff; 
+    text-decoration: none; 
+    background: linear-gradient(135deg, #ff6f61, #c76fd6, #6f7fd6);
+    box-shadow: 0 14px 40px rgba(0, 0, 0, 0.35); 
+    transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.35s ease; 
   }
-
-  .lock-error {
-    margin-top: 12px;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    font-size: 12.5px;
-    color: #ffb0a8;
-    min-height: 16px;
+  
+  .drive:hover { transform: translateY(-4px) scale(1.01); box-shadow: 0 20px 50px rgba(0, 0, 0, 0.45); }
+  .drive:active { transform: scale(0.98); }
+  .drive .ph { position: absolute; inset: 0; display: grid; place-items: center; font-size: 56px; }
+  .drive img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  
+  .drive .cap { 
+    position: absolute; 
+    inset: auto 0 0; 
+    padding: 48px 18px 16px; 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: flex-end; 
+    gap: 10px;
+    background: linear-gradient(transparent, rgba(20, 5, 25, 0.88)); 
   }
-
-  .lock-card.reveal.shake {
-    animation: cardPopIn 0.85s cubic-bezier(0.34, 1.56, 0.64, 1) forwards, shake 0.4s ease-in-out;
+  
+  .drive b { display: block; font-size: 1.05rem; }
+  .drive small { opacity: 0.8; }
+  .drive .go { 
+    flex: none; 
+    width: 38px; 
+    height: 38px; 
+    display: grid; 
+    place-items: center; 
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2); 
+    transition: transform 0.35s ease; 
   }
+  .drive:hover .go { transform: translate(3px, -3px); }
 
-  @keyframes shake {
-    0%, 100% { transform: translateX(0) scale(1); }
-    25% { transform: translateX(-8px) scale(1); }
-    75% { transform: translateX(8px) scale(1); }
+  .rv { 
+    opacity: 0; 
+    transform: translateY(26px) scale(0.98);
+    transition: opacity 0.9s ease var(--d, 0s), transform 0.9s cubic-bezier(0.2, 0.8, 0.2, 1) var(--d, 0s); 
+  }
+  .rv.in { opacity: 1; transform: none; }
+
+  @media (prefers-reduced-motion: reduce) {
+    #fl { display: none; } 
+    h1, #go { animation: none; } 
+    .rv { transition: none; }
   }
 </style>
 </head>
-<body>
+<body class="locked">
 
-  <!-- Password lock screen -->
-  <div class="lock-screen" id="lockScreen">
-    <div class="lock-card" id="lockCard">
-      <div class="lock-icon">🚇</div>
-      <div class="lock-title">this ride needs a password</div>
-      <input type="password" id="lockInput" class="lock-input" placeholder="First 5 digit of Password" inputmode="numeric" autocomplete="off">
-      <button type="button" id="lockBtn" class="lock-btn">Surprise Me</button>
-      <div class="lock-error" id="lockError"></div>
+<div id="wa" aria-hidden="true"></div>
+<div id="fl" aria-hidden="true"></div>
+
+<div id="lock">
+  <div id="lc">
+    <div class="ic">🚇</div>
+    <div class="tt">this ride needs a password</div>
+    <input type="password" id="inp" placeholder="Password" inputmode="numeric" autocomplete="off">
+    <button type="button" id="go">Surprise Me</button>
+    <div id="err"></div>
+  </div>
+</div>
+
+<main class="page">
+  <header class="hero rv" style="--d:.5s">
+    <span class="chip">🎂 a little surprise for you</span>
+    <h1>Happy Birthday!</h1>
+    <div class="nm" id="nm"></div>
+  </header>
+
+  <section class="glass rv">
+    <!-- Birthday wishes text block -->
+    <p class="wish">Today is all about you. I hope your day is full of laughter, your favorite people, and little surprises that make you smile. Thank you for being exactly who you are. Here's to a new year of good music, great memories, and everything you've been wishing for. 🎶✨</p>
+    
+
+    <!-- Using the RAW githubusercontent link to stream the file natively -->
+    <div class="video-container" id="player">
+      <video id="vid" controls playsinline src="https://raw.githubusercontent.com/Memory-reboot/Trying-something-new/main/%5BEnglish%20Cover%5D%20Tada%20Koe%20Hitotsu%20(%E3%81%9F%E3%81%A0%E5%A3%B0%E4%B8%80%E3%81%A4)%20-%20Rokudenashi(360P).mp4"></video>
     </div>
-  </div>
 
-  <!-- Floating control panel, pinned top-left: mute/unmute icon only -->
-  <div class="control-panel" id="controlPanel">
-    <button id="muteBtn" type="button" aria-label="Unmute" title="Unmute">
-      <svg id="iconMuted" viewBox="0 0 24 24"><path d="M16.5 12A4.5 4.5 0 0 0 14 7.97v2.21l2.45 2.45c.03-.2.05-.42.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51A8.796 8.796 0 0 0 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3 3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06a8.99 8.99 0 0 0 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4 9.91 6.09 12 8.18V4z"/></svg>
-      <span id="iconEqualizer" class="equalizer">
-        <span></span><span></span><span></span><span></span>
+    <!-- Synchronized Animated Lyrics Box -->
+    <div class="lyrics-box" id="lyrBox">
+      <div class="lyrics-tag">♪ made purely with love by Deepanshu</div>
+      <span id="line">Press play to begin</span>
+    </div>
+  </section>
+
+  <div class="rv">
+    <a class="drive" href="https://drive.google.com/file/d/1lhX260zcaRPNgR3TrYRi6dnOUa3Ymr-B/view" target="_blank" rel="noopener">
+      <span class="ph">📄</span>
+      <img src="https://drive.google.com/thumbnail?id=1lhX260zcaRPNgR3TrYRi6dnOUa3Ymr-B&sz=w1000" alt="" onerror="this.remove()">
+      <span class="cap">
+        <span>
+          <b>Your surprise 🎁</b>
+          <small>Tap to open file</small>
+        </span>
+        <span class="go">↗</span>
       </span>
-    </button>
+    </a>
   </div>
-  <div class="audio-hint" id="audioHint">✨ Tap for the full experience</div>
+</main>
 
-  <!-- Full-screen embedded document/media viewer -->
-  <iframe
-    class="stage-frame"
-    src="https://drive.google.com/file/d/1B0Oo1SS1YbAn3x0PbgTRLDzWzoIvc2WA/preview"
-    allow="autoplay; fullscreen"
-    allowfullscreen>
-  </iframe>
+<script>
+  const PASSWORD = '';          
+  const NAME = 'Your Name';     
 
-  <!-- Hidden background audio track -->
-  <audio id="bgAudio" loop preload="auto" style="display:none;">
-    <source src="https://raw.githubusercontent.com/Memory-reboot/Trying-something-new/main/Sousou%20no%20Frieren%20Ending%20_%20milet%20-%20Anytime%20Anywhere%20(Instrumental)(MP3_160K).mp3" type="audio/mpeg">
-  </audio>
+  // Synced Lyrics Data for the English cover
+  // Note: Adjust the 'time' values (in seconds) to match exactly when the singer sings them in your cover!
+const lyricsData = [
+  { time: 20.35, text: "They gave me the pieces of every moment I love." },
+  { time: 27.20, text: "All by myself, alone, and the pages of the journal." },
+  { time: 33.50, text: "I fill with the words, \"When will the truth be told?\"" },
+  { time: 40.00, text: "Whisper the song that will keep me alive." },
+  { time: 44.40, text: "Love will be back once again, and again it will stay." },
+  { time: 49.60, text: "Far into the night, until the dawn is here." },
+  { time: 53.00, text: "Every breath that you take will be here, and be near." },
+  { time: 58.00, text: "Looking through every memory to keep myself together." },
+  { time: 63.30, text: "One love, see you again, see you again." },
+  { time: 67.30, text: "Until the warmth and light glow in the night." },
+  { time: 71.90, text: "Take one breath. Live." },
+  { time: 75.30, text: "Live on." },
+  { time: 78.80, text: "So that I won't cry beside these gentle days." },
+  { time: 90.10, text: "Keep myself together." }
+];
 
-  <script>
-    (function () {
-      // Change this to update the password.
-      const SITE_PASSWORD = '88822';
+  const $ = id => document.getElementById(id);
+  const lock = $('lock'), lc = $('lc'), inp = $('inp'), err = $('err'), line = $('line'), vid = $('vid');
 
-      const lockScreen = document.getElementById('lockScreen');
-      const lockCard = document.getElementById('lockCard');
-      const lockInput = document.getElementById('lockInput');
-      const lockBtn = document.getElementById('lockBtn');
-      const lockError = document.getElementById('lockError');
+  $('nm').textContent = NAME ? '✨ ' + NAME + ' ✨' : '';
 
-      function tryUnlock() {
-        if (lockInput.value.trim() === SITE_PASSWORD) {
-          lockScreen.classList.add('unlocked');
-        } else {
-          lockError.textContent = 'Incorrect password, try again.';
-          lockCard.classList.remove('shake');
-          void lockCard.offsetWidth; // restart animation
-          lockCard.classList.add('shake');
-          lockInput.value = '';
-          lockInput.focus();
-        }
+  const D = {
+    heart: '<path d="M20 34C6 24 4 14 11 9c5-3 9 1 9 4 0-3 4-7 9-4 7 5 5 15-9 25z"/>',
+    star: '<path d="M20 4L24.5 15 36 16 27 24 30 36 20 29.5 10 36 13 24 4 16 15.5 15z"/>',
+    cloud: '<path d="M10 30C3 30 3 20 10 20 10 11 22 9 25 17 33 14 38 24 31 30z"/>',
+    smiley: '<circle cx="20" cy="20" r="15"/><path d="M13 17v1M27 17v1M12 24c4 7 12 7 16 0"/>',
+    sparkle: '<path d="M20 3C21 14 26 19 37 20 26 21 21 26 20 37 19 26 14 21 3 20 14 19 14 20 3z"/>',
+    squiggle: '<path d="M3 20C8 8 13 8 18 20 23 32 28 32 33 20 35 16 37 14 38 13"/>',
+    spiral: '<path d="M20 20c2-2 4 0 2 3-3 4-9 0-7-6 3-7 13-4 13 5 0 10-13 13-19 5C3 18 10 6 22 6"/>'
+  };
+  const spots = [[10,12,'heart',-15],[95,20,'star',12],[175,8,'cloud',8],[40,85,'smiley',10],[130,80,'sparkle',0],
+    [215,95,'squiggle',-20],[15,165,'spiral',20],[165,160,'heart',18],[225,215,'star',-10],[60,225,'cloud',-8],[130,235,'smiley',-12]];
+  
+  let tile = '<svg xmlns="http://www.w3.org/2000/svg" width="260" height="260" viewBox="0 0 260 260"><g fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">';
+  spots.forEach(p => tile += '<g transform="translate(' + p[0] + ' ' + p[1] + ') rotate(' + p[3] + ' 20 20) scale(.78)">' + D[p[2]] + '</g>');
+  $('wa').style.cssText = 'background:url("data:image/svg+xml,' + encodeURIComponent(tile + '</g></svg>') + '") 0 0/260px 260px';
+
+  const COLORS = ['#bfe3ff', '#ffffff', '#ffd6e7', '#e6d9ff'];
+  for (let side = 0; side < 2; side++) {
+    for (let n = 0; n < 7; n++) {
+      const f = document.createElement('div'), sz = 16 + Math.random() * 16;
+      let petals = ''; 
+      for (let i = 0; i < 5; i++) petals += '<ellipse cy="-7" rx="4" ry="6" transform="rotate(' + i * 72 + ')"/>';
+      f.className = 'fx';
+      f.style[side ? 'right' : 'left'] = (Math.random() * 4.5).toFixed(1) + 'vw';
+      f.style.setProperty('--s', (Math.random() * 26 - 13).toFixed(0) + 'px');
+      f.style.animationDuration = (9 + Math.random() * 9).toFixed(1) + 's';
+      f.style.animationDelay = (-Math.random() * 18).toFixed(1) + 's';
+      f.innerHTML = '<svg width="' + sz + '" height="' + sz + '" viewBox="-14 -14 28 28"><g fill="' + COLORS[n % 4] +
+        '" stroke="rgba(0,0,0,.15)" stroke-width=".6">' + petals + '</g><circle r="3" fill="#ffe08a"/></svg>';
+      $('fl').appendChild(f);
+    }
+  }
+
+  setTimeout(() => { lc.classList.add('show'); inp.focus(); }, 1200);
+  
+  const io = new IntersectionObserver(es => es.forEach(e => {
+    if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+  }), { threshold: 0.15 });
+
+  function unlock() {
+    if (inp.value.trim() !== PASSWORD) {
+      err.textContent = 'Incorrect password, try again.';
+      lc.classList.remove('shake'); 
+      void lc.offsetWidth; 
+      lc.classList.add('shake');
+      inp.value = ''; 
+      inp.focus(); 
+      return;
+    }
+    lock.classList.add('open');
+    document.body.classList.remove('locked');
+    document.querySelectorAll('.rv').forEach(el => io.observe(el));
+  }
+  
+  $('go').addEventListener('click', unlock);
+  inp.addEventListener('keydown', e => { if (e.key === 'Enter') unlock(); });
+
+  // Lyric Sync Engine
+  function setLineText(txt) {
+    if(line.textContent === txt) return;
+    line.classList.remove('active');
+    setTimeout(() => {
+      line.textContent = txt;
+      if (txt) line.classList.add('active');
+    }, 250);
+  }
+
+  vid.addEventListener('timeupdate', () => {
+    const ct = vid.currentTime;
+    let currentLyric = "";
+    
+    // Find the current lyric based on playback time
+    for (let i = 0; i < lyricsData.length; i++) {
+      if (ct >= lyricsData[i].time) {
+        currentLyric = lyricsData[i].text;
       }
+    }
+    setLineText(currentLyric);
+  });
 
-      // Let the background photo breathe for a moment before the card pops in.
-      setTimeout(function () {
-        lockCard.classList.add('reveal');
-        lockInput.focus();
-      }, 3000);
-
-      lockBtn.addEventListener('click', tryUnlock);
-      lockInput.addEventListener('keydown', function (e) {
-        if (e.key === 'Enter') tryUnlock();
-      });
-    })();
-  </script>
-
-  <script>
-    (function () {
-      const audio = document.getElementById('bgAudio');
-      const muteBtn = document.getElementById('muteBtn');
-      const iconMuted = document.getElementById('iconMuted');
-      const iconEqualizer = document.getElementById('iconEqualizer');
-      const controlPanel = document.getElementById('controlPanel');
-      const audioHint = document.getElementById('audioHint');
-
-      // Audio starts muted so the browser will allow it to autoplay silently.
-      audio.muted = true;
-
-      function updateIcon() {
-        const isMuted = audio.muted || audio.paused;
-        iconMuted.style.display = isMuted ? 'block' : 'none';
-        iconEqualizer.classList.toggle('show', !isMuted);
-        muteBtn.setAttribute('aria-label', isMuted ? 'Unmute' : 'Mute');
-        muteBtn.setAttribute('title', isMuted ? 'Unmute' : 'Mute');
-      }
-
-      // Attempt a silent autoplay as soon as the page loads so the loop
-      // is already running in the background; the user just unmutes it.
-      function attemptSilentAutoplay() {
-        const playPromise = audio.play();
-        if (playPromise !== undefined) {
-          playPromise.catch(function (err) {
-            // Autoplay was blocked entirely (even muted). It will start
-            // on the first user click of the icon instead.
-            console.warn('Silent autoplay was blocked by the browser:', err);
-          });
-        }
-      }
-      attemptSilentAutoplay();
-
-      // Nudge the visitor toward the button shortly after the page loads.
-      setTimeout(function () {
-        audioHint.classList.add('show');
-      }, 900);
-
-      function dismissHint() {
-        audioHint.classList.remove('show');
-        audioHint.classList.add('hide');
-      }
-
-      muteBtn.addEventListener('click', function () {
-        audio.muted = !audio.muted;
-
-        if (audio.paused) {
-          const playPromise = audio.play();
-          if (playPromise !== undefined) {
-            playPromise.catch(function (err) {
-              console.warn('Playback was prevented by the browser:', err);
-            });
-          }
-        }
-
-        if (!audio.muted) {
-          controlPanel.classList.add('is-playing');
-          dismissHint();
-        } else {
-          controlPanel.classList.remove('is-playing');
-        }
-
-        updateIcon();
-      });
-
-      updateIcon();
-    })();
-  </script>
-
+</script>
 </body>
 </html>
