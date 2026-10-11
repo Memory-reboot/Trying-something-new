@@ -1241,7 +1241,7 @@
             gifts = gifts.filter(q => now - q.t0 < 20000);
             for (const q of gifts) {
                 const a = now - q.t0;
-                g.globalAlpha = 1 - eo((a - 8500) / 1500);
+                g.globalAlpha = 1 - eo((a - 18500) / 1500);
                 CC.red = q.c[0];
                 CC.line = q.c[1];
                 CC.blue = '#ffd25a';
