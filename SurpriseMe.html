@@ -1238,7 +1238,7 @@
             g.setTransform(dpr, 0, 0, dpr, 0, 0);
             g.clearRect(0, 0, BW, BH);
             const o = [CC.red, CC.line, CC.blue];
-            gifts = gifts.filter(q => now - q.t0 < 10000);
+            gifts = gifts.filter(q => now - q.t0 < 20000);
             for (const q of gifts) {
                 const a = now - q.t0;
                 g.globalAlpha = 1 - eo((a - 8500) / 1500);
