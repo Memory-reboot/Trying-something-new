@@ -266,21 +266,21 @@ const TYPE_MS = num('--typing-speed-ms'), ERASE_MS = num('--erase-speed-ms'), LI
 const FINAL_HOLD_MS = num('--final-hold-seconds') * 1000, ROSE_LIFE_MS = num('--rose-life-seconds') * 1000, ROSE_FADE_MS = 1500;
 
 /* Song lyrics: [seconds, text] */
-const lyricsData = [
-  { time: 20.35, text: "She gave me pieces of every moment I kept." },
-  { time: 27.20, text: "All by myself, I opened the pages and wept." },
-  { time: 33.50, text: "I filled them with words, with things left unsaid." },
-  { time: 40.00, text: "Whispered the stories that lived in my head." },
-  { time: 44.40, text: "Same route, same hour, again and again." },
-  { time: 49.60, text: "Far into the morning, through sun and through rain." },
-  { time: 53.00, text: "Every small moment I noticed and kept." },
-  { time: 58.00, text: "Looking through memory so nothing is left." },
-  { time: 63.30, text: "One route, one hour, the same every day." },
-  { time: 67.30, text: "Until the warmth of that company found its own way." },
-  { time: 71.90, text: "Take one route. Stay." },
-  { time: 75.30, text: "Stay on." },
-  { time: 78.80, text: "So every quiet journey can mean something again." },
-  { time: 90.10, text: "Keep traveling together." }
+const lyricsData = [  
+  [20.35, "She gave me pieces of every moment I kept."],  
+  [27.20, "All by myself, I opened the pages and wept."],  
+  [33.50, "I filled them with words, with things left unsaid."],  
+  [40.00, "Whispered the stories that lived in my head."],  
+  [44.40, "Same route, same hour, again and again."],  
+  [49.60, "Far into the morning, through sun and through rain."],  
+  [53.00, "Every small moment I noticed and kept."],  
+  [58.00, "Looking through memory so nothing is left."],  
+  [63.30, "One route, one hour, the same every day."],  
+  [67.30, "Until the warmth of that company found its own way."],  
+  [71.90, "Take one route. Stay."],  
+  [75.30, "Stay on."],  
+  [78.80, "So every quiet journey can mean something again."],  
+  [90.10, "Keep traveling together."]  
 ];
 
 const $ = id => document.getElementById(id);
