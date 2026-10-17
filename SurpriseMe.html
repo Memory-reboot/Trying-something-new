@@ -1,1446 +1,723 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-    <title>Pika🎂</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Dancing+Script:wght@500;600;700&family=Outfit:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,400&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            /* ========================================================
-               ⚙️ EDITABLE CONTENT VARIABLES (Edit your values here)
-               ======================================================== */
-            --password: "88822";
-            --title-name: "by Deepanshu";
-            --pdf-link: "https://memory-reboot.github.io/Trying-something-new/Pika.html";
-            --wish-text: "Today is all about celebrating you and the incredible light you bring into the world. I hope your day is filled with endless laughter, cherished moments, and wonderful surprises. Thank you for being wonderfully, beautifully you. Here's to another amazing year ahead! 🎶✨";
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<!-- Lets iPhone/Android open the page full screen when added to the home screen -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#e71109">
+<title>Pika🎂</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Dancing+Script:wght@500;600;700&family=Outfit:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,400&display=swap" rel="stylesheet">
 
-            /* ========================================================
-               🎨 THEME STYLING VARIABLES
-               ======================================================== */
-            --gold: #f5d77f;
-            --gg: #ffe27a;
-            --pearl: #fff5f7;
-            --serif: 'Playfair Display', serif;
-            --sans: 'Outfit', sans-serif;
-            --cur: 'Dancing Script', cursive;
-        }
+<style>
+/* ==========================================================================
+   1. EASY SETTINGS  -  edit ONLY this block for everyday changes
+   ========================================================================== */
+:root {
+  /* ---- Content ---- */
+  --password: "88822";                    /* unlock password */
+  --title-name: "by Deepanshu";           /* text under "Happy Birthday" */
+  --pdf-link: "https://memory-reboot.github.io/Trying-something-new/Pika.html";
+  --pdf-thumbnail: "https://raw.githubusercontent.com/Memory-reboot/Trying-something-new/3a598fb2d824078d816c55ae85b2b4e2a2eaafd0/Pdf_preview.jpg";   /* image on the gift card */
+  --wish-text: "Today is all about celebrating you and the incredible light you bring into the world. I hope your day is filled with endless laughter, cherished moments, and wonderful surprises. Thank you for being wonderfully, beautifully you. Here's to another amazing year ahead! 🎶✨";
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            user-select: none;
-            -webkit-user-select: none;
-        }
+  /* ---- Name-garden typing lines (leave "" to skip a line) ---- */
+  --garden-line-1: "If you know";
+  --garden-line-2: "You know";
+  --garden-line-3: "";
+  --garden-line-4: "";
+  --garden-line-5: "";
+  --garden-final-line: "Pika";            /* 6th line: always typed last and shown before the loop restarts */
 
-        html {
-            background: #e71109;
-            scroll-behavior: smooth;
-        }
+  /* ---- Timings (numbers only) ---- */
+  --typing-speed-ms: 120;                 /* delay between typed letters */
+  --erase-speed-ms: 70;                   /* delay between erased letters */
+  --line-hold-ms: 1800;                   /* how long each line stays before erasing */
+  --final-hold-seconds: 10;               /* how long the last line stays before restarting */
+  --rose-life-seconds: 20;                /* tapped background roses disappear after this */
 
-        body {
-            min-height: 100vh;
-            color: #fff;
-            overflow-x: hidden;
-            font-family: var(--sans);
-            -webkit-font-smoothing: antialiased;
-            background: radial-gradient(circle at 50% 25%, #ff2e24 0%, #e71109 50%, #b50903 100%) fixed;
-            cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 28 28'%3E%3Cg transform='translate(14 14)'%3E%3Cg fill='%23ffd6e7' stroke='%23ff6f61' stroke-width='.8'%3E%3Cellipse cy='-7' rx='4' ry='6'/%3E%3Cellipse cy='-7' rx='4' ry='6' transform='rotate(72)'/%3E%3Cellipse cy='-7' rx='4' ry='6' transform='rotate(144)'/%3E%3Cellipse cy='-7' rx='4' ry='6' transform='rotate(216)'/%3E%3Cellipse cy='-7' rx='4' ry='6' transform='rotate(288)'/%3E%3C/g%3E%3Ccircle r='3' fill='%23ffe08a'/%3E%3C/g%3E%3C/svg%3E") 14 14, auto;
-        }
+  /* ---- Look ---- */
+  --garden-h: clamp(190px, 50vw, 300px);  /* height of the name box */
+  --garden-fill-1: rgba(212,14,7,.45);    /* name box fill (centre) - last number = opacity */
+  --garden-fill-2: rgba(156,8,4,.45);     /* name box fill (edges) */
+  --doodle-opacity: .6;                   /* background doodles 0-1 */
+  --doodle-size: 340px;                   /* size of the doodle tile (mobile overrides below) */
+  --vignette: rgba(55,0,2,.5);            /* dark page edges */
+  --glass: rgba(45,6,9,.55);              /* card background */
 
-        body.locked {
-            overflow: hidden;
-            height: 100vh;
-        }
+  /* ---- Theme colors & fonts ---- */
+  --gold: #f5d77f; --gg: #ffe27a; --pearl: #fff5f7;
+  --serif: 'Playfair Display', serif;
+  --sans: 'Outfit', sans-serif;
+  --cur: 'Dancing Script', cursive;
+}
 
-        .cd, .cr {
-            position: fixed;
-            top: 0;
-            left: 0;
-            border-radius: 50%;
-            pointer-events: none;
-            transform: translate(-50%, -50%);
-        }
+/* ==========================================================================
+   2. BASE  -  page background, custom cursor, locked state
+   ========================================================================== */
+* { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-user-select: none; }
+html { background: #e71109; scroll-behavior: smooth; }
+body {
+  min-height: 100vh; color: #fff; overflow-x: hidden; font-family: var(--sans); -webkit-font-smoothing: antialiased;
+  background: radial-gradient(circle at 50% 25%, #ff2e24 0%, #e71109 50%, #b50903 100%) fixed;
+  /* rose-shaped mouse cursor (desktop only) */
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 28 28'%3E%3Cg transform='translate(14 14)'%3E%3Cg fill='%23ffd6e7' stroke='%23ff6f61' stroke-width='.8'%3E%3Cellipse cy='-7' rx='4' ry='6'/%3E%3Cellipse cy='-7' rx='4' ry='6' transform='rotate(72)'/%3E%3Cellipse cy='-7' rx='4' ry='6' transform='rotate(144)'/%3E%3Cellipse cy='-7' rx='4' ry='6' transform='rotate(216)'/%3E%3Cellipse cy='-7' rx='4' ry='6' transform='rotate(288)'/%3E%3C/g%3E%3Ccircle r='3' fill='%23ffe08a'/%3E%3C/g%3E%3C/svg%3E") 14 14, auto;
+}
+body.locked { overflow: hidden; height: 100vh; }          /* no scrolling until unlocked */
 
-        .cd {
-            width: 8px;
-            height: 8px;
-            background: var(--gold);
-            z-index: 99999;
-            box-shadow: 0 0 16px rgba(245,215,127,.9);
-        }
+/* glowing dot + ring that follow the mouse */
+.cd, .cr { position: fixed; top: 0; left: 0; border-radius: 50%; pointer-events: none; transform: translate(-50%,-50%); }
+.cd { width: 8px; height: 8px; background: var(--gold); z-index: 99999; box-shadow: 0 0 16px rgba(245,215,127,.9); }
+.cr { width: 36px; height: 36px; border: 1.5px solid rgba(255,226,122,.5); z-index: 99998; transition: width .3s, height .3s, background .25s; }
+.cr.eye { width: 54px; height: 54px; border-color: var(--gold); background: rgba(245,215,127,.14); }
 
-        .cr {
-            width: 36px;
-            height: 36px;
-            border: 1.5px solid rgba(255,226,122,.5);
-            z-index: 99998;
-            transition: width .3s, height .3s, background .25s;
-        }
+/* ==========================================================================
+   3. BACKGROUND LAYERS  (bottom to top: doodles 0 > roses 1 > page 2 > petals 3)
+   ========================================================================== */
+#wa, #fl, #bg { position: fixed; inset: 0; pointer-events: none; }
+#wa { z-index: 0; opacity: var(--doodle-opacity); background-size: var(--doodle-size) var(--doodle-size); }   /* doodles */
+#bg { z-index: 1; width: 100%; height: 100%; }                                                              /* tapped roses */
+#fl { z-index: 3; overflow: hidden; }                                                                       /* falling petals */
+body::after { content: ''; position: fixed; inset: 0; z-index: 1; pointer-events: none;                     /* dark edges */
+  background: radial-gradient(ellipse at 50% 45%, transparent 50%, var(--vignette) 100%); }
+.fx { position: absolute; top: -40px; opacity: 0; animation: fall linear infinite; }
+@keyframes fall {
+  0%   { transform: translate(0,-5vh) rotate(0); opacity: 0; }
+  10%  { opacity: .82; }
+  50%  { transform: translate(var(--s),50vh) rotate(180deg); }
+  100% { transform: translate(calc(var(--s) * -1),108vh) rotate(360deg); opacity: 0; }
+}
 
-        .cr.eye {
-            width: 54px;
-            height: 54px;
-            border-color: var(--gold);
-            background: rgba(245,215,127,.14);
-        }
+/* ==========================================================================
+   4. LOCK SCREEN
+   ========================================================================== */
+#lock {
+  position: fixed; inset: 0; z-index: 100; display: flex; align-items: center; justify-content: center;
+  background: #4a0301 url('https://raw.githubusercontent.com/Memory-reboot/Trying-something-new/main/36541d69dbe149931eed945876bccfae.jpg') center/cover;
+  transition: opacity .7s, visibility .7s;
+}
+#lock::before { content: ''; position: absolute; inset: 0; background: linear-gradient(135deg, rgba(80,5,2,.18), rgba(40,2,1,.28)); }  /* light tint so the photo stays visible */
+#lock.open { opacity: 0; visibility: hidden; pointer-events: none; }
+#lc {                                                         /* password card */
+  position: relative; width: min(340px,86vw); padding: 36px 28px; text-align: center;
+  border: 1px solid rgba(255,255,255,.3); border-radius: 24px; background: rgba(55,6,8,.62);
+  backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
+  box-shadow: 0 25px 60px rgba(0,0,0,.6), inset 0 1px 1px rgba(255,255,255,.25);
+  opacity: 0; transform: translateY(28px) scale(.88); pointer-events: none;
+}
+#lc.show { animation: pop .85s cubic-bezier(.34,1.56,.64,1) forwards; pointer-events: auto; }
+#lc.show.shake { animation: pop .01s forwards, shake .4s; }   /* wrong password wiggle */
+@keyframes pop   { 55% { opacity: 1; transform: translateY(-6px) scale(1.03); } 100% { opacity: 1; transform: none; } }
+@keyframes shake { 25% { transform: translateX(-8px); } 75% { transform: translateX(8px); } }
+#lc .ic { font-size: 38px; margin-bottom: 12px; }
+#lc .tt { font-family: var(--serif); font-size: 1.3rem; font-weight: 600; margin-bottom: 20px; color: var(--pearl); }
+#inp { width: 100%; padding: 14px 16px; margin-bottom: 16px; font-size: 16px; letter-spacing: 1.5px; text-align: center; color: #fff;
+  background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.28); border-radius: 14px; outline: none; user-select: text; -webkit-user-select: text; }
+#inp::placeholder { color: rgba(255,230,235,.5); }
+#inp:focus { border-color: var(--gold); box-shadow: 0 0 18px rgba(245,215,127,.3); }
+#go { width: 100%; padding: 14px; font-size: .95rem; font-weight: 600; color: #2b0201; border: none; border-radius: 14px; cursor: pointer;
+  background: linear-gradient(135deg, #ffe27a, #f5d77f 50%, #dfb550); box-shadow: 0 6px 20px rgba(245,215,127,.4); }
+#go:active { transform: scale(.97); }
+#err { margin-top: 14px; min-height: 18px; font-size: 13px; color: #ffb0a8; font-weight: 500; }
 
-        #wa, #fl, #bg {
-            position: fixed;
-            inset: 0;
-            pointer-events: none;
-        }
+/* ==========================================================================
+   5. PAGE LAYOUT  -  heading, name garden, cards
+   ========================================================================== */
+.page { position: relative; z-index: 2; max-width: 820px; margin: 0 auto; display: flex; flex-direction: column; gap: 34px;
+  padding: max(40px, env(safe-area-inset-top)) clamp(20px,6vw,36px) 100px; }
+.hero { text-align: center; padding-top: 36px; }
+.chip { display: inline-flex; align-items: center; gap: 8px; padding: 8px 18px; font-size: .82rem; font-weight: 500; letter-spacing: .1em;
+  text-transform: uppercase; border: 1px solid rgba(255,255,255,.3); border-radius: 99px; background: rgba(65,8,10,.6); backdrop-filter: blur(12px); color: var(--gold); }
+h1 { margin: 16px 0 8px; font-family: var(--serif); font-size: clamp(2.6rem,10vw,4.6rem); line-height: 1.05; font-weight: 700; letter-spacing: -.02em;
+  background: linear-gradient(135deg, #fff8ee 20%, #ffe27a 60%, #ffc58a); -webkit-background-clip: text; background-clip: text; color: transparent;
+  filter: drop-shadow(0 4px 20px rgba(0,0,0,.25)); }
+.nm { font-family: var(--cur); font-size: clamp(2rem,7vw,2.9rem); color: var(--gold); text-shadow: 0 2px 18px rgba(245,215,127,.45); }
 
-        #wa {
-            z-index: 0;
-            opacity: .65;
-        }
+/* name garden box (the animated typing area) */
+#garden { position: relative; margin-top: 14px; height: var(--garden-h); border-radius: 26px; touch-action: pan-y;
+  border: 1px solid rgba(255,255,255,.22);
+  background: radial-gradient(circle at 50% 40%, var(--garden-fill-1), var(--garden-fill-2));
+  box-shadow: inset 0 0 50px rgba(50,0,0,.22); }
+#gc { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
 
-        body::after {
-            content: '';
-            position: fixed;
-            inset: 0;
-            z-index: 1;
-            pointer-events: none;
-            background: radial-gradient(ellipse at 50% 45%, transparent 50%, rgba(55,0,2,.55) 100%);
-        }
+/* cards: photo, wish, video each get their own glass card */
+.glass { padding: 26px; border: 1px solid rgba(255,255,255,.25); border-radius: 26px; background: var(--glass);
+  backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px); box-shadow: 0 20px 55px rgba(0,0,0,.5), inset 0 1px 1px rgba(255,255,255,.15); }
+.ac { position: relative; width: 100%; aspect-ratio: 16/10; border-radius: 20px; overflow: hidden; background: #e71109; border: 1px solid rgba(255,255,255,.25); }
+#character-canvas { display: block; width: 100%; height: 100%; }
+.wish { font-size: clamp(1.05rem,3.8vw,1.2rem); line-height: 1.8; color: rgba(255,245,247,.94); font-weight: 300; text-align: center; }
+.vc { position: relative; aspect-ratio: 16/9; overflow: hidden; border-radius: 18px; background: #000; border: 1px solid rgba(255,255,255,.25); }
+.vc video { width: 100%; height: 100%; display: block; object-fit: cover; }
+.lb { margin-top: 22px; padding: 26px 22px; border-radius: 20px; text-align: center; min-height: 110px; background: rgba(30,4,6,.75);
+  border: 1px solid rgba(255,255,255,.2); display: flex; flex-direction: column; justify-content: center; align-items: center;
+  overflow: hidden; transition: height .5s cubic-bezier(.2,.8,.2,1); }   /* height animates when the lyric gets longer/shorter */
+.lt { font-size: .75rem; letter-spacing: .2em; text-transform: uppercase; margin-bottom: 12px; color: var(--gold); font-weight: 600; }
+#line { font-size: clamp(1.2rem,4.8vw,1.55rem); font-weight: 600; line-height: 1.4; color: transparent;
+  background: linear-gradient(120deg, #fff, #ffb3d9, var(--gg)); -webkit-background-clip: text; background-clip: text;
+  opacity: 0; transform: translateY(14px) scale(.92); filter: blur(6px); transition: all .45s cubic-bezier(.175,.885,.32,1.275); }
+#line.active { opacity: 1; transform: none; filter: none; }
 
-        #bg {
-            z-index: 1;
-            width: 100%;
-            height: 100%;
-        }
+/* gift link card */
+.drive { display: block; position: relative; overflow: hidden; aspect-ratio: 16/9; border: 1px solid rgba(255,255,255,.28); border-radius: 24px; color: #fff;
+  text-decoration: none; background: linear-gradient(135deg, #7a0805, #420301, #9e0e0a); box-shadow: 0 18px 45px rgba(0,0,0,.45); transition: transform .35s, border-color .3s; }
+.drive:hover { transform: translateY(-5px); border-color: var(--gold); }
+.drive .ph { position: absolute; inset: 0; display: grid; place-items: center; font-size: 60px; }
+.drive img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: .85; }
+.drive .cap { position: absolute; inset: auto 0 0; padding: 55px 22px 20px; display: flex; justify-content: space-between; align-items: flex-end; gap: 12px;
+  background: linear-gradient(transparent, rgba(30,4,6,.95)); }
+.drive b { display: block; font-family: var(--serif); font-size: 1.25rem; font-weight: 600; }
+.drive small { font-size: .85rem; color: var(--gold); }
+.drive .go { flex: none; width: 42px; height: 42px; display: grid; place-items: center; border-radius: 50%; background: rgba(245,215,127,.2); border: 1px solid rgba(245,215,127,.4); color: var(--gold); }
 
-        #fl {
-            z-index: 3;
-            overflow: hidden;
-        }
+/* fade-in on scroll */
+.rv { opacity: 0; transform: translateY(26px) scale(.98); transition: opacity .9s ease var(--d,0s), transform .9s cubic-bezier(.2,.8,.2,1) var(--d,0s); }
+.rv.in { opacity: 1; transform: none; }
 
-        .fx {
-            position: absolute;
-            top: -40px;
-            opacity: 0;
-            animation: fall linear infinite;
-        }
+/* full-screen button (bottom-right, hidden if the browser can't do full screen) */
+#fs { position: fixed; right: max(14px, env(safe-area-inset-right)); bottom: max(14px, env(safe-area-inset-bottom)); z-index: 50; width: 44px; height: 44px; border-radius: 50%;
+  border: 1px solid rgba(255,255,255,.35); background: rgba(55,6,8,.65); color: #fff; font-size: 20px; cursor: pointer; backdrop-filter: blur(8px); display: none; }
+#fs.show { display: block; }
 
-        @keyframes fall {
-            0% { transform: translate(0, -5vh) rotate(0); opacity: 0; }
-            10% { opacity: .82; }
-            50% { transform: translate(var(--s), 50vh) rotate(180deg); }
-            100% { transform: translate(calc(var(--s) * -1), 108vh) rotate(360deg); opacity: 0; }
-        }
-
-        #lock {
-            position: fixed;
-            inset: 0;
-            z-index: 100;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: #4a0301 url('https://raw.githubusercontent.com/Memory-reboot/Trying-something-new/main/36541d69dbe149931eed945876bccfae.jpg') center/cover;
-            transition: opacity .7s, visibility .7s;
-        }
-
-        #lock::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(135deg, rgba(80,5,2,.18), rgba(40,2,1,.28));
-        }
-
-        #lock.open {
-            opacity: 0;
-            visibility: hidden;
-            pointer-events: none;
-        }
-
-        #lc {
-            position: relative;
-            width: min(340px, 86vw);
-            padding: 36px 28px;
-            text-align: center;
-            border: 1px solid rgba(255,255,255,.3);
-            border-radius: 24px;
-            background: rgba(55,6,8,.62);
-            backdrop-filter: blur(18px);
-            -webkit-backdrop-filter: blur(18px);
-            box-shadow: 0 25px 60px rgba(0,0,0,.6), inset 0 1px 1px rgba(255,255,255,.25);
-            opacity: 0;
-            transform: translateY(28px) scale(.88);
-            pointer-events: none;
-        }
-
-        #lc.show {
-            animation: pop .85s cubic-bezier(.34, 1.56, .64, 1) forwards;
-            pointer-events: auto;
-        }
-
-        #lc.show.shake {
-            animation: pop .01s forwards, shake .4s;
-        }
-
-        @keyframes pop {
-            55% { opacity: 1; transform: translateY(-6px) scale(1.03); }
-            100% { opacity: 1; transform: none; }
-        }
-
-        @keyframes shake {
-            25% { transform: translateX(-8px); }
-            75% { transform: translateX(8px); }
-        }
-
-        #lc .ic {
-            font-size: 38px;
-            margin-bottom: 12px;
-        }
-
-        #lc .tt {
-            font-family: var(--serif);
-            font-size: 1.3rem;
-            font-weight: 600;
-            margin-bottom: 20px;
-            color: var(--pearl);
-        }
-
-        #inp {
-            width: 100%;
-            padding: 14px 16px;
-            margin-bottom: 16px;
-            font-size: 16px;
-            letter-spacing: 1.5px;
-            text-align: center;
-            color: #fff;
-            background: rgba(255,255,255,.12);
-            border: 1px solid rgba(255,255,255,.28);
-            border-radius: 14px;
-            outline: none;
-            user-select: text;
-            -webkit-user-select: text;
-        }
-
-        #inp::placeholder {
-            color: rgba(255,230,235,.5);
-        }
-
-        #inp:focus {
-            border-color: var(--gold);
-            box-shadow: 0 0 18px rgba(245,215,127,.3);
-        }
-
-        #go {
-            width: 100%;
-            padding: 14px;
-            font-size: .95rem;
-            font-weight: 600;
-            color: #2b0201;
-            border: none;
-            border-radius: 14px;
-            background: linear-gradient(135deg, #ffe27a, #f5d77f 50%, #dfb550);
-            cursor: pointer;
-            box-shadow: 0 6px 20px rgba(245,215,127,.4);
-        }
-
-        #go:active {
-            transform: scale(.97);
-        }
-
-        #err {
-            margin-top: 14px;
-            min-height: 18px;
-            font-size: 13px;
-            color: #ffb0a8;
-            font-weight: 500;
-        }
-
-        .page {
-            position: relative;
-            z-index: 2;
-            max-width: 720px;
-            margin: 0 auto;
-            display: flex;
-            flex-direction: column;
-            gap: 26px;
-            padding: max(40px, env(safe-area-inset-top)) clamp(20px, 6vw, 36px) 100px;
-        }
-
-        .hero {
-            text-align: center;
-            padding-top: 36px;
-        }
-
-        .chip {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 8px 18px;
-            font-size: .82rem;
-            font-weight: 500;
-            letter-spacing: .1em;
-            text-transform: uppercase;
-            border: 1px solid rgba(255,255,255,.3);
-            border-radius: 99px;
-            background: rgba(65,8,10,.6);
-            backdrop-filter: blur(12px);
-            color: var(--gold);
-        }
-
-        h1 {
-            margin: 16px 0 8px;
-            font-family: var(--serif);
-            font-size: clamp(2.8rem, 11vw, 4.6rem);
-            line-height: 1.05;
-            font-weight: 700;
-            letter-spacing: -.02em;
-            background: linear-gradient(135deg, #fff8ee 20%, #ffe27a 60%, #ffc58a);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            filter: drop-shadow(0 4px 20px rgba(0,0,0,.25));
-        }
-
-        .nm {
-            font-family: var(--cur);
-            font-size: clamp(2.1rem, 7vw, 2.9rem);
-            color: var(--gold);
-            text-shadow: 0 2px 18px rgba(245,215,127,.45);
-        }
-
-        #garden {
-            position: relative;
-            margin-top: 12px;
-            height: clamp(190px, 50vw, 300px);
-            cursor: text;
-            touch-action: pan-y;
-            border-radius: 26px;
-            border: 1px dashed rgba(255,255,255,.4);
-            background: radial-gradient(circle at 50% 40%, rgba(212,14,7,.5), rgba(156,8,4,.5));
-            box-shadow: inset 0 0 50px rgba(50,0,0,.25);
-        }
-
-        #gc {
-            position: absolute;
-            inset: 0;
-            width: 100%;
-            height: 100%;
-            display: block;
-        }
-
-        #hint {
-            position: absolute;
-            inset: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            padding: 0 20px;
-            font-family: var(--cur);
-            font-size: 1.5rem;
-            color: rgba(255,245,247,.8);
-            pointer-events: none;
-            transition: opacity .4s;
-        }
-
-        #gi {
-            position: absolute;
-            inset: 0;
-            width: 100%;
-            height: 100%;
-            opacity: 0;
-            border: 0;
-            padding: 0;
-            margin: 0;
-            font-size: 16px;
-            color: transparent;
-            background: transparent;
-            caret-color: transparent;
-            outline: none;
-            cursor: text;
-            user-select: text;
-            -webkit-user-select: text;
-            z-index: 2;
-        }
-
-        .glass {
-            padding: 28px 26px;
-            border: 1px solid rgba(255,255,255,.25);
-            border-radius: 26px;
-            background: rgba(45,6,9,.5);
-            backdrop-filter: blur(5px);
-            -webkit-backdrop-filter: blur(5px);
-            box-shadow: 0 20px 55px rgba(0,0,0,.5), inset 0 1px 1px rgba(255,255,255,.15);
-        }
-
-        .ac {
-            position: relative;
-            width: 100%;
-            aspect-ratio: 16/10;
-            border-radius: 20px;
-            overflow: hidden;
-            background: #e71109;
-            border: 1px solid rgba(255,255,255,.25);
-        }
-
-        #character-canvas {
-            display: block;
-            width: 100%;
-            height: 100%;
-        }
-
-        .wish {
-            margin-top: 22px;
-            font-size: clamp(1.05rem, 3.8vw, 1.2rem);
-            line-height: 1.8;
-            color: rgba(255,245,247,.94);
-            font-weight: 300;
-        }
-
-        .vc {
-            position: relative;
-            aspect-ratio: 16/9;
-            overflow: hidden;
-            border-radius: 18px;
-            background: #000;
-            border: 1px solid rgba(255,255,255,.25);
-            margin-top: 22px;
-        }
-
-        .vc video {
-            width: 100%;
-            height: 100%;
-            display: block;
-            object-fit: cover;
-        }
-
-        .lb {
-            margin-top: 22px;
-            padding: 26px 22px;
-            border-radius: 20px;
-            text-align: center;
-            min-height: 110px;
-            background: rgba(30,4,6,.75);
-            border: 1px solid rgba(255,255,255,.2);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .lt {
-            font-size: .75rem;
-            letter-spacing: .2em;
-            text-transform: uppercase;
-            margin-bottom: 12px;
-            color: var(--gold);
-            font-weight: 600;
-        }
-
-        #line {
-            font-size: clamp(1.2rem, 4.8vw, 1.55rem);
-            font-weight: 600;
-            line-height: 1.4;
-            background: linear-gradient(120deg, #fff, #ffb3d9, var(--gg));
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            opacity: 0;
-            transform: translateY(14px) scale(.92);
-            filter: blur(6px);
-            transition: all .45s cubic-bezier(.175, .885, .32, 1.275);
-        }
-
-        #line.active {
-            opacity: 1;
-            transform: none;
-            filter: none;
-        }
-
-        .drive {
-            display: block;
-            position: relative;
-            overflow: hidden;
-            aspect-ratio: 16/9;
-            border: 1px solid rgba(255,255,255,.28);
-            border-radius: 24px;
-            color: #fff;
-            text-decoration: none;
-            background: linear-gradient(135deg, #7a0805, #420301, #9e0e0a);
-            box-shadow: 0 18px 45px rgba(0,0,0,.45);
-            transition: transform .35s, border-color .3s;
-        }
-
-        .drive:hover {
-            transform: translateY(-5px);
-            border-color: var(--gold);
-        }
-
-        .drive .ph {
-            position: absolute;
-            inset: 0;
-            display: grid;
-            place-items: center;
-            font-size: 60px;
-        }
-
-        .drive img {
-            position: absolute;
-            inset: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            opacity: .85;
-        }
-
-        .drive .cap {
-            position: absolute;
-            inset: auto 0 0;
-            padding: 55px 22px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-end;
-            gap: 12px;
-            background: linear-gradient(transparent, rgba(30,4,6,.95));
-        }
-
-        .drive b {
-            display: block;
-            font-family: var(--serif);
-            font-size: 1.25rem;
-            font-weight: 600;
-        }
-
-        .drive small {
-            font-size: .85rem;
-            color: var(--gold);
-        }
-
-        .drive .go {
-            flex: none;
-            width: 42px;
-            height: 42px;
-            display: grid;
-            place-items: center;
-            border-radius: 50%;
-            background: rgba(245,215,127,.2);
-            border: 1px solid rgba(245,215,127,.4);
-            color: var(--gold);
-        }
-
-        .rv {
-            opacity: 0;
-            transform: translateY(26px) scale(.98);
-            transition: opacity .9s ease var(--d, 0s), transform .9s cubic-bezier(.2, .8, .2, 1) var(--d, 0s);
-        }
-
-        .rv.in {
-            opacity: 1;
-            transform: none;
-        }
-
-        @media(max-width: 768px) {
-            .cd, .cr { display: none; }
-            body { cursor: auto; }
-        }
-
-        @media(prefers-reduced-motion: reduce) {
-            #fl { display: none; }
-            .rv { transition: none; }
-        }
-    </style>
+/* ==========================================================================
+   6. MOBILE  -  roomier spacing, bigger & fainter doodles, fewer petals
+   ========================================================================== */
+@media (max-width: 768px) {
+  .cd, .cr { display: none; }                     /* no mouse cursor on phones */
+  body { cursor: auto; }
+}
+@media (max-width: 600px) {
+  :root { --doodle-size: 480px; --doodle-opacity: .4; }
+  .page { gap: 30px; padding-bottom: 80px; }
+  .hero { padding-top: 24px; }
+  .chip { font-size: .7rem; padding: 6px 14px; }
+  .glass { padding: 18px 16px; border-radius: 22px; }
+  .lb { padding: 20px 14px; }
+  .fx:nth-child(3n) { display: none; }            /* fewer falling petals */
+}
+@media (prefers-reduced-motion: reduce) { #fl { display: none; } .rv { transition: none; } }
+</style>
 </head>
+
 <body class="locked">
-    <div id="wa" aria-hidden="true"></div>
-    <canvas id="bg" aria-hidden="true"></canvas>
-    <div id="fl" aria-hidden="true"></div>
-    
-    <div id="lock">
-        <div id="lc">
-            <div class="ic">💌</div>
-            <div class="tt">Enter password to unlock your surprise</div>
-            <input type="password" id="inp" placeholder="First 5-digit of Password" inputmode="numeric" autocomplete="off">
-            <button type="button" id="go">Surprise Me ✨</button>
-            <div id="err"></div>
-        </div>
-    </div>
-    
-    <div class="cd" id="cursor-dot"></div>
-    <div class="cr" id="cursor-ring"></div>
-    
-    <main class="page">
-        <header class="hero rv" style="--d:.4s">
-            <span class="chip">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
-                </svg> A Special Birthday Surprise
-            </span>
-            <h1>Happy Birthday</h1>
-            <div class="nm" id="nm"></div>
-            <div id="garden">
-                <canvas id="gc"></canvas>
-                <div id="hint">tap here &amp; type your name 🌹<br><small style="font-size:1rem">space cuts · backspace withers · tap to plant roses on the page</small></div>
-                <input id="gi" type="text" aria-label="Type your name" autocapitalize="off" autocomplete="off" autocorrect="off" spellcheck="false" enterkeyhint="done">
-            </div>
-        </header>
-
-        <section class="glass rv" style="--d:.6s">
-            <div class="ac" id="anime-card">
-                <canvas id="character-canvas"></canvas>
-            </div>
-            <!-- Wish text displayed above the video -->
-            <p class="wish" id="wish-text"></p>
-            <div class="vc">
-                <video id="vid" controls playsinline src="https://raw.githubusercontent.com/Memory-reboot/Trying-something-new/main/%5BEnglish%20Cover%5D%20Tada%20Koe%20Hitotsu%20(%E3%81%9F%E3%81%A0%E5%A3%B0%E4%B8%80%E3%81%A4)%20-%20Rokudenashi(360P).mp4"></video>
-            </div>
-            <div class="lb">
-                <div class="lt">♪ Made with love &amp; care</div>
-                <span id="line">Press play to begin</span>
-            </div>
-        </section>
-
-        <div class="rv" style="--d:.8s">
-            <!-- PDF / Gift Link -->
-            <a class="drive" id="pdf-anchor" href="#" target="_blank" rel="noopener">
-                <span class="ph">🎁</span>
-                <img src="https://drive.google.com/thumbnail?id=1lhX260zcaRPNgR3TrYRi6dnOUa3Ymr-B&sz=w1000" alt="" onerror="this.remove()">
-                <span class="cap">
-                    <span><b>Your Special Gift 💝</b><small>Tap to open surprise file, Enter the last 5-digits of password</small></span>
-                    <span class="go">↗</span>
-                </span>
-            </a>
-        </div>
-    </main>
-
-    <script>
-        // Read configuration variables directly from the CSS :root block above
-        const rootStyles = getComputedStyle(document.documentElement);
-        const getCssVar = name => rootStyles.getPropertyValue(name).trim().replace(/^["']|["']$/g, '');
-
-        const PASSWORD = getCssVar('--password');
-        const TITLE_NAME = getCssVar('--title-name');
-        const PDF_LINK = getCssVar('--pdf-link');
-        const WISH_TEXT = getCssVar('--wish-text');
-
-        const lyricsData = [
-            [20.35, "They gave me the pieces of every moment I love."],
-            [27.2, "All by myself, alone, and the pages of the journal."],
-            [33.5, "I fill with the words, \"When will the truth be told?\""],
-            [40, "Whisper the song that will keep me alive."],
-            [44.4, "Love will be back once again, and again it will stay."],
-            [49.6, "Far into the night, until the dawn is here."],
-            [53, "Every breath that you take will be here, and be near."],
-            [58, "Looking through every memory to keep myself together."],
-            [63.3, "One love, see you again, see you again."],
-            [67.3, "Until the warmth and light glow in the night."],
-            [71.9, "Take one breath. Live."],
-            [75.3, "Live on."],
-            [78.8, "So that I won't cry beside these gentle days."],
-            [90.1, "Keep myself together."]
-        ];
-
-        const $ = id => document.getElementById(id),
-              lock = $('lock'),
-              lc = $('lc'),
-              inp = $('inp'),
-              err = $('err'),
-              line = $('line'),
-              vid = $('vid');
-
-        // Apply variables to the DOM
-        $('nm').textContent = '✨ ' + TITLE_NAME + ' ✨';
-        $('wish-text').textContent = WISH_TEXT;
-        $('pdf-anchor').href = PDF_LINK;
-
-        // Doodle wallpaper
-        const D = {
-            heart: '<path d="M20 34C6 24 4 14 11 9c5-3 9 1 9 4 0-3 4-7 9-4 7 5 5 15-9 25z"/>',
-            star: '<path d="M20 4L24.5 15 36 16 27 24 30 36 20 29.5 10 36 13 24 4 16 15.5 15z"/>',
-            cloud: '<path d="M10 30C3 30 3 20 10 20 10 11 22 9 25 17 33 14 38 24 31 30z"/>',
-            smiley: '<circle cx="20" cy="20" r="15"/><path d="M13 17v1M27 17v1M12 24c4 7 12 7 16 0"/>',
-            sparkle: '<path d="M20 3C21 14 26 19 37 20 26 21 21 26 20 37 19 26 14 21 3 20 14 19 14 20 3z"/>',
-            gift: '<path d="M8 12h24v20H8zM4 12h32v6H4zM20 12v20M8 20h24"/>'
-        };
-
-        const spots = [
-            [25, 30, 'heart', -15], [110, 45, 'star', 12], [190, 20, 'sparkle', 8],
-            [270, 55, 'gift', 10], [60, 130, 'smiley', 0], [140, 110, 'heart', -20],
-            [220, 140, 'star', 18], [300, 115, 'sparkle', -10], [30, 210, 'gift', 15],
-            [110, 230, 'cloud', -8], [190, 200, 'smiley', 12], [280, 225, 'heart', -5],
-            [70, 300, 'star', -15], [150, 290, 'sparkle', 20], [230, 310, 'gift', -12]
-        ];
-
-        let tile = '<svg xmlns="http://www.w3.org/2000/svg" width="340" height="340" viewBox="0 0 340 340"><g fill="none" stroke="rgba(255,235,242,0.6)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">';
-        spots.forEach(p => tile += '<g transform="translate(' + p[0] + ' ' + p[1] + ') rotate(' + p[3] + ' 20 20) scale(.85)">' + D[p[2]] + '</g>');
-        $('wa').style.background = 'url("data:image/svg+xml,' + encodeURIComponent(tile + '</g></svg>') + '") 0 0/340px 340px';
-
-        // Falling petals
-        const FC = ['#ffb3d9', '#fff', '#ffe27a', '#ff85a1'];
-        for (let side = 0; side < 2; side++) {
-            for (let n = 0; n < 7; n++) {
-                const f = document.createElement('div'), sz = 16 + Math.random() * 16;
-                let pt = '';
-                for (let i = 0; i < 5; i++) pt += '<ellipse cy="-7" rx="4" ry="6" transform="rotate(' + (i * 72) + ')"/>';
-                f.className = 'fx';
-                f.style[side ? 'right' : 'left'] = (Math.random() * 5).toFixed(1) + 'vw';
-                f.style.setProperty('--s', (Math.random() * 26 - 13).toFixed(0) + 'px');
-                f.style.animationDuration = (10 + Math.random() * 9).toFixed(1) + 's';
-                f.style.animationDelay = (-Math.random() * 20).toFixed(1) + 's';
-                f.innerHTML = '<svg width="' + sz + '" height="' + sz + '" viewBox="-14 -14 28 28"><g fill="' + FC[n % 4] + '" stroke="rgba(0,0,0,.15)" stroke-width=".6">' + pt + '</g><circle r="3" fill="#ffe08a"/></svg>';
-                $('fl').appendChild(f);
-            }
-        }
-
-        setTimeout(() => { lc.classList.add('show'); inp.focus(); }, 1200);
-
-        const io = new IntersectionObserver(es => es.forEach(e => {
-            if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
-        }), { threshold: .15 });
-
-        let unlocked = false;
-
-        function unlock() {
-            if (inp.value.trim() !== PASSWORD) {
-                err.textContent = 'Incorrect password, please try again.';
-                lc.classList.remove('shake');
-                void lc.offsetWidth;
-                lc.classList.add('shake');
-                inp.value = '';
-                inp.focus();
-                return;
-            }
-            unlocked = true;
-            lock.classList.add('open');
-            document.body.classList.remove('locked');
-            document.querySelectorAll('.rv').forEach(el => io.observe(el));
-            setTimeout(() => { gResize(); bgResize(); }, 900);
-        }
-
-        $('go').addEventListener('click', unlock);
-        inp.addEventListener('keydown', e => { if (e.key === 'Enter') unlock(); });
-
-        function setLine(t) {
-            if (line.textContent === t) return;
-            line.classList.remove('active');
-            setTimeout(() => {
-                line.textContent = t;
-                if (t) line.classList.add('active');
-            }, 250);
-        }
-
-        vid.addEventListener('timeupdate', () => {
-            let c = '';
-            for (const l of lyricsData) if (vid.currentTime >= l[0]) c = l[1];
-            setLine(c);
-        });
-
-        // Type Garden & Canvas Logic
-        const F = '"Abril Fatface","Playfair Display",Georgia,serif', SENT = '\u200b';
-        const CC = { red: '#fff1dc', blue: '#ffd25a', line: '#b50903', text: '#fff8ee', vein: '#b50903' };
-        const gc = $('gc'), gi = $('gi'), bgc = $('bg'), hint = $('hint'), stage = $('garden');
-        let g = gc.getContext('2d');
-        const gctx = g, bctx = bgc.getContext('2d');
-        let W = 0, H = 0, dpr = 1, letters = [], uid = 1, cache = {}, Sd = 0, St = 0, wrapped = false, cx = 0, cy = 0, cxT = 0, cyT = 0, lastKey = 0, mx = null, my = 0, kd = false, iv = SENT, t0 = performance.now(), lt = 0, NOW = 0, gifts = [], BW = 0, BH = 0;
-
-        const hh_ = n => { const x = Math.sin(n) * 43758.5453; return x - Math.floor(x); },
-              spr = (t, k = 7, w = 16) => t <= 0 ? 0 : 1 - Math.exp(-t * k) * Math.cos(t * w),
-              eo = t => t <= 0 ? 0 : t >= 1 ? 1 : 1 - Math.pow(1 - t, 3);
-
-        function rng(seed) {
-            let s = seed | 0;
-            return () => {
-                s = (s + 0x6D2B79F5) | 0;
-                let t = Math.imul(s ^ (s >>> 15), 1 | s);
-                t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
-                return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-            };
-        }
-
-        const bez = (a, b, c, d, n) => {
-            const P = [];
-            for (let i = 0; i <= n; i++) {
-                const t = i / n, u = 1 - t;
-                P.push([u * u * u * a[0] + 3 * u * u * t * b[0] + 3 * u * t * t * c[0] + t * t * t * d[0],
-                        u * u * u * a[1] + 3 * u * u * t * b[1] + 3 * u * t * t * c[1] + t * t * t * d[1]]);
-            }
-            return P;
-        };
-
-        const at = (P, u) => {
-            const n = P.length, i = Math.min(n - 2, Math.max(1, Math.round(u * (n - 1))));
-            return [P[i], Math.atan2(P[i + 1][1] - P[i - 1][1], P[i + 1][0] - P[i - 1][0])];
-        };
-
-        const jit = (id, f, a) => a ? [(hh_(id * 1.37 + f * 7.13) * 2 - 1) * a, (hh_(id * 2.71 + f * 3.11) * 2 - 1) * a, (hh_(id * 5.3 + f * 1.7) * 2 - 1) * .035] : [0, 0, 0];
-
-        function path(c, p, closed) {
-            const n = p.length;
-            if (n < 2) return;
-            const m = (a, b) => [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2];
-            if (closed) {
-                const s = m(p[n - 1], p[0]);
-                c.moveTo(s[0], s[1]);
-                for (let i = 0; i < n; i++) {
-                    const q = m(p[i], p[(i + 1) % n]);
-                    c.quadraticCurveTo(p[i][0], p[i][1], q[0], q[1]);
-                }
-                c.closePath();
-            } else {
-                c.moveTo(p[0][0], p[0][1]);
-                for (let i = 1; i < n - 1; i++) {
-                    const q = m(p[i], p[i + 1]);
-                    c.quadraticCurveTo(p[i][0], p[i][1], q[0], q[1]);
-                }
-                c.lineTo(p[n - 1][0], p[n - 1][1]);
-            }
-        }
-
-        const B = {
-            fill: (p, col) => { g.beginPath(); path(g, p, true); g.fillStyle = col; g.fill(); },
-            stroke: (p, col, w) => { g.beginPath(); path(g, p, false); g.strokeStyle = col; g.lineWidth = w; g.lineCap = 'round'; g.lineJoin = 'round'; g.stroke(); },
-            rect: (x, y, w, h, col) => { g.fillStyle = col; g.fillRect(x, y, w, h); },
-            text: (ch, x, y, S, col) => {
-                g.font = `400 ${S}px ${F}`;
-                g.textAlign = 'center';
-                g.textBaseline = 'alphabetic';
-                g.lineJoin = 'round';
-                g.strokeStyle = '#4a0305';
-                g.lineWidth = S * .05;
-                g.strokeText(ch, x, y);
-                g.fillStyle = col;
-                g.fillText(ch, x, y);
-            }
-        };
-
-        function vine(base, dir, len, amp, waves, ph, bend, n) {
-            n = n || 40;
-            const P = [[base[0], base[1]]], st = len / n;
-            let x = base[0], y = base[1];
-            for (let i = 1; i <= n; i++) {
-                const u = i / n, a = dir + bend * u + amp * Math.sin(u * Math.PI * waves + ph) * Math.min(1, u * 3);
-                x += Math.cos(a) * st;
-                y += Math.sin(a) * st;
-                P.push([x, y]);
-            }
-            return P;
-        }
-
-        function curl(P, sign, rad) {
-            const n = P.length, e = P[n - 1], a = Math.atan2(e[1] - P[n - 2][1], e[0] - P[n - 2][0]),
-                  c = [e[0] - Math.sin(a) * sign * rad, e[1] + Math.cos(a) * sign * rad],
-                  a0 = Math.atan2(e[1] - c[1], e[0] - c[0]);
-            for (let i = 1; i <= 14; i++) {
-                const u = i / 14, t = a0 + sign * u * Math.PI * 1.6, rr = rad * (1 - .5 * u);
-                P.push([c[0] + Math.cos(t) * rr, c[1] + Math.sin(t) * rr]);
-            }
-            return P;
-        }
-
-        function weave(r, l0) {
-            const cuts = [], nc = 1 + Math.floor(r() * 3);
-            for (let i = 0; i < nc; i++) cuts.push(.15 + r() * .7);
-            cuts.sort((a, b) => a - b);
-            const segs = [];
-            let u0 = 0, layer = l0;
-            for (const c of cuts) {
-                if (c <= u0) continue;
-                segs.push({ u0, u1: c, layer });
-                if (r() < .3) u0 = Math.min(.98, c + .02 + r() * .03);
-                else u0 = c;
-                layer = 1 - layer;
-            }
-            segs.push({ u0, u1: 1, layer });
-            return segs;
-        }
-
-        const layerAt = (segs, u) => {
-            for (const s of segs) if (u >= s.u0 && u <= s.u1) return s.layer;
-            return segs[segs.length - 1].layer;
-        };
-
-        function mw(ch) {
-            if (cache[ch] != null) return cache[ch];
-            gctx.font = `400 100px ${F}`;
-            let w = gctx.measureText(ch).width / 100;
-            if (ch === ' ') w *= 1.4;
-            return cache[ch] = w;
-        }
-
-        function layoutCore(A, W, H, pw) {
-            const maxW = W * .92, S0 = H * .34, LH = 2.1, ws = A.map(l => mw(l.ch)), words = [];
-            let cur = null;
-            A.forEach((l, i) => {
-                if (l.ch === ' ') {
-                    if (cur) { words.push(cur); cur = null; }
-                    words.push({ sp: 1, idx: [i] });
-                } else {
-                    if (!cur) cur = { idx: [] };
-                    cur.idx.push(i);
-                }
-            });
-            if (cur) words.push(cur);
-
-            const lineW = (li, S) => {
-                let e = li.length;
-                while (e > 0 && A[li[e - 1]].ch === ' ') e--;
-                let w = 0;
-                for (let k = 0; k < e; k++) w += ws[li[k]];
-                return w * S;
-            };
-
-            const wrap = S => {
-                const lines = [[]];
-                let lw = 0;
-                for (const w of words) {
-                    const ww = w.idx.reduce((s, i) => s + ws[i], 0) * S;
-                    if (!w.sp && lw > 0 && lw + ww > maxW) {
-                        lines.push([]);
-                        lw = 0;
-                    }
-                    lines[lines.length - 1].push(...w.idx);
-                    lw += ww;
-                }
-                return lines;
-            };
-
-            let lines = [A.map((_, i) => i)];
-            const unit = lineW(lines[0], 1);
-            let S = unit > 0 ? Math.min(S0, maxW / unit) : S0;
-            const multi = words.filter(w => !w.sp).length > 1;
-            let wr = multi && (S < H * .1 || (pw && S < H * .14));
-
-            if (wr) {
-                let lo = H * .03, hi = H * .15;
-                for (let k = 0; k < 22; k++) {
-                    const mid = (lo + hi) / 2, ls = wrap(mid);
-                    if (ls.every(li => lineW(li, mid) <= maxW) && ls.length * LH * mid <= H * .82) lo = mid;
-                    else hi = mid;
-                }
-                S = lo;
-                lines = wrap(S);
-                if (lines.length < 2) wr = false;
-            }
-
-            const n = lines.length, lh = LH * S;
-            lines.forEach((li, k) => {
-                let x = W / 2 - lineW(li, S) / 2;
-                const y = H / 2 + (k - (n - 1) / 2) * lh + .33 * S;
-                li.forEach(i => {
-                    const l = A[i], w = ws[i] * S;
-                    l.tx = x + w / 2;
-                    l.ty = y;
-                    l.tw = w;
-                    x += w;
-                });
-            });
-            return { S, wrapped: wr };
-        }
-
-        function layout(snap) {
-            if (!W) return;
-            const A = letters.filter(l => !l.dead), res = layoutCore(A, W, H, wrapped);
-            wrapped = res.wrapped;
-            A.forEach(l => { if (l.x == null) { l.x = l.tx; l.y = l.ty; } });
-            const S = res.S, last = A[A.length - 1];
-            St = S;
-            cxT = last ? last.tx + last.tw / 2 + .07 * S : W / 2;
-            cyT = last ? last.ty - .33 * S : H / 2;
-            if (snap || !Sd) {
-                Sd = S;
-                cx = cxT;
-                cy = cyT;
-                A.forEach(l => { l.x = l.tx; l.y = l.ty; });
-            }
-        }
-
-        function gResize() {
-            const r = gc.getBoundingClientRect();
-            if (!r.width) return;
-            dpr = window.devicePixelRatio || 1;
-            W = r.width;
-            H = r.height;
-            gc.width = Math.round(W * dpr);
-            gc.height = Math.round(H * dpr);
-            layout(true);
-        }
-
-        function bgResize() {
-            BW = innerWidth;
-            BH = innerHeight;
-            bgc.width = Math.round(BW * dpr);
-            bgc.height = Math.round(BH * dpr);
-        }
-
-        function wordParams(ws) {
-            const r = rng(ws * 7 + 13);
-            return { roseP: .3 + r() * .3, leafy: .6 + r() * .8, lean: (r() - .5) * .6, big: .85 + r() * .45, curvy: .8 + r() * .6, bridgeP: Math.min(.95, .45 + r() * .35), w: .5 };
-        }
-
-        function grow(r, E, nid, p, o) {
-            const tip = o.tip || (r() < p.roseP ? 'rose' : r() < .45 ? 'fan' : r() < .6 ? 'leaf' : 'curl');
-            let P = o.pts || vine(o.base, o.dir, o.len, (.35 + r() * .45) * p.curvy, 1 + r() * 1.6, r() * 6.28, (r() - .5) * 1.2, 40);
-            if (tip === 'curl') P = curl(P, r() < .5 ? -1 : 1, .05 + r() * .05);
-            const segs = weave(r, o.layer0 != null ? o.layer0 : (r() < .5 ? 0 : 1)),
-                  dur = Math.max(320, (o.len || .8) * 620), thorns = [], nt = Math.floor(r() * 2.5);
-            for (let i = 0; i < nt; i++) thorns.push({ u: .15 + r() * .65, s: r() < .5 ? -1 : 1 });
-            E.push({ t: 'stem', id: nid(), pts: P, segs, d0: o.d0, dur, w: o.depth ? .82 : 1, thorns });
-
-            const nl = Math.floor(r() * 2.8 * p.leafy);
-            let sd = r() < .5 ? -1 : 1;
-            for (let i = 0; i < nl; i++) {
-                const u = .25 + r() * .6, [q, a] = at(P, u);
-                sd = -sd;
-                E.push({ t: 'leaf', id: nid(), x: q[0], y: q[1], a: a + sd * (.55 + r() * .5), L: (.14 + r() * .2) * (o.depth ? .8 : 1), bend: (r() - .5) * 1.2, layer: layerAt(segs, u), d0: o.d0 + dur * u });
-            }
-
-            const [tp, ta] = at(P, 1), td = o.d0 + dur * .8, tl = layerAt(segs, 1);
-            if (tip === 'rose') {
-                const R = (.13 + r() * .15) * p.big * (o.depth ? .75 : 1),
-                      over = tp[1] > -.78 && tp[1] < .05 && Math.abs(tp[0]) < p.w * .5,
-                      layer = over ? (r() < .22 ? 1 : 0) : (r() < .6 ? 1 : tl);
-                E.push({ t: 'rose', id: nid(), x: tp[0], y: tp[1], R, rot: (r() - .5), ph1: r() * 6.28, ph2: r() * 6.28, turns: 1.8 + r(), layer, d0: td });
-                if (r() < .2) {
-                    const oo = ta + (r() < .5 ? 1 : -1) * 1.3;
-                    E.push({ t: 'rose', id: nid(), x: tp[0] + Math.cos(oo) * R * 1.4, y: tp[1] + Math.sin(oo) * R * 1.4, R: R * (.6 + r() * .3), rot: (r() - .5) * 1.2, ph1: r() * 6.28, ph2: r() * 6.28, turns: 1.8 + r(), layer, d0: td + 120 });
-                }
-            } else if (tip === 'fan') {
-                const sp = .6 + r() * .3;
-                for (let j = 0; j < 2; j++) E.push({ t: 'leaf', id: nid(), x: tp[0], y: tp[1], a: ta + (j - .5) * sp, L: .2 + r() * .2, bend: (j - .5) * .8, layer: tl, d0: td + j * 60 });
-            } else if (tip === 'leaf') {
-                E.push({ t: 'leaf', id: nid(), x: tp[0], y: tp[1], a: ta + (r() - .5) * .3, L: .16 + r() * .16, bend: r() - .5, layer: tl, d0: td });
-            }
-
-            if (!o.depth && r() < .3) {
-                const u = .35 + r() * .35, [q, a] = at(P, u);
-                grow(r, E, nid, p, { base: q, dir: a + (r() < .5 ? -1 : 1) * (.7 + r() * .4), len: (o.len || .8) * (.35 + r() * .2), d0: o.d0 + dur * u, depth: 1, layer0: layerAt(segs, u) });
-            }
-        }
-
-        function gen(l) {
-            const r = rng((l.ws ^ Math.imul(l.wi + 1, 2654435761)) + Math.floor(Math.random() * 1e6)),
-                  p = wordParams(l.ws), E = [];
-            let k0 = 0;
-            const nid = () => l.id * 100 + (k0++), w = mw(l.ch), inX = () => (r() - .5) * w * .7;
-            p.w = w;
-
-            const nUp = 1 + (r() < .45 ? 1 : 0);
-            for (let i = 0; i < nUp; i++) grow(r, E, nid, p, { base: [inX(), -r() * .3], dir: -Math.PI / 2 + p.lean * .5 + (r() - .5) * .7, len: .6 + r() * .5, d0: 40 + i * 130, tip: l.wi === 0 && i === 0 ? 'rose' : null });
-            if (r() < .4) grow(r, E, nid, p, { base: [inX(), -.1 - r() * .35], dir: Math.PI / 2 + (r() - .5) * .8, len: .35 + r() * .35, d0: 160 });
-            
-            if (l.prev && r() < p.bridgeP) {
-                const px = -(mw(l.prev.ch) + w) / 2, a = [inX(), -.05 - r() * .55], b = [px + (r() - .5) * .25, -.05 - r() * .55],
-                      bulge = (r() < .55 ? -1 : 1) * (.4 + r() * .4), dx = b[0] - a[0];
-                let P = bez(a, [a[0] + dx * .15, a[1] + bulge], [b[0] - dx * .15, b[1] + bulge * .9], b, 40);
-                if (r() < .45) P = P.slice(0, Math.floor(P.length * (.7 + r() * .2)));
-                grow(r, E, nid, p, { pts: P, len: Math.abs(dx) + Math.abs(bulge), d0: 90, tip: r() < .5 ? 'curl' : r() < .5 ? 'leaf' : 'rose' });
-            }
-
-            if (l.wi === 0) grow(r, E, nid, p, { base: [-w * .3, -.15 - r() * .4], dir: Math.PI + (r() - .5) * 1.2, len: .45 + r() * .3, d0: 120, tip: 'curl' });
-
-            l.els = E;
-            l.endEls = null;
-            const T = [], tr = rng(l.id * 977 + Math.floor(Math.random() * 1e6));
-            grow(tr, T, () => l.id * 100 + 90 + T.length, p, { base: [w * .25, -.1 - tr() * .45], dir: (tr() - .5) * 1.4, len: .45 + tr() * .25, d0: 0, tip: 'curl', depth: 1 });
-            l.tend = T.filter(e => e.t === 'stem').slice(0, 1);
-        }
-
-        function genEnd(l, rel) {
-            const r = rng(l.ws + l.wi * 31 + Math.floor(Math.random() * 1e6)), p = wordParams(l.ws), E = [];
-            let k0 = 50;
-            const nid = () => l.id * 100 + (k0++), w = mw(l.ch), n = 1 + Math.floor(r() * 2.5);
-            p.w = w;
-            for (let i = 0; i < n; i++) {
-                const dir = -Math.PI / 2 + .6 + (i - (n - 1) / 2) * .9 + (r() - .5) * .4;
-                grow(r, E, nid, p, { base: [(r() - .2) * w * .6, -r() * .5], dir, len: .4 + r() * .45, d0: rel + 40 + i * 90, depth: 1, tip: i === 0 || r() < .5 ? 'rose' : 'fan' });
-            }
-            l.endEls = E;
-        }
-
-        function strokeRange(P, a, b, col, w) {
-            const n = P.length - 1, ia = a * n, ib = b * n,
-                  lerp = t => {
-                      const i = Math.min(n - 1, Math.floor(t)), f = t - i;
-                      return [P[i][0] + (P[i + 1][0] - P[i][0]) * f, P[i][1] + (P[i + 1][1] - P[i][1]) * f];
-                  };
-            const pts = [lerp(ia)];
-            for (let i = Math.floor(ia) + 1; i < ib; i++) pts.push(P[i]);
-            pts.push(lerp(ib));
-            if (pts.length >= 2) B.stroke(pts, col, w);
-        }
-
-        function leaf(bx, by, a, L, bend) {
-            if (L < .5) return;
-            const ca = Math.cos(a), sa = Math.sin(a), px = -sa, py = ca,
-                  ax = u => { const b = Math.sin(Math.PI * u) * bend * .15 * L; return [bx + ca * u * L + px * b, by + sa * u * L + py * b]; },
-                  hw = u => L * .18 * Math.sin(Math.PI * Math.pow(u, .8)), N = 12, s1 = [], s2 = [];
-            for (let i = 0; i <= N; i++) {
-                const u = i / N, c = ax(u), w = hw(u);
-                s1.push([c[0] + px * w, c[1] + py * w]);
-                s2.push([c[0] - px * w, c[1] - py * w]);
-            }
-            const tip = ax(1), base = ax(0);
-            B.fill([base, ...s1.slice(1, N), tip, tip, ...s2.slice(1, N).reverse(), base], CC.blue);
-            if (L > 6) {
-                const v = [];
-                for (let i = 0; i <= 8; i++) v.push(ax(.08 + .72 * i / 8));
-                B.stroke(v, CC.vein, Math.max(.8, L * .03));
-            }
-        }
-
-        function rose(cx, cy, R, rot, e, a) {
-            const cr = Math.cos(rot), sr = Math.sin(rot), T = (x, y) => [cx + x * cr - y * sr, cy + x * sr + y * cr];
-            const P = [
-                [0, -.36, .56, .54, 0, 0, 0],
-                [-.5, -.06, .6, .6, -.35, 0, 0],
-                [.52, -.06, .6, .6, .35, 0, 0],
-                [-.42, .3, .62, .48, .2, .12, 1],
-                [.47, .3, .62, .48, -.2, .12, 1],
-                [.05, .42, .56, .38, 0, .14, 0]
-            ];
-            const ay0 = .5, lw = Math.max(.8, R * .045), st = 85;
-            P.forEach((q, i) => {
-                const s = spr((a - i * st) / 1000, 8, 14);
-                if (s <= .001) return;
-                const open = (1 - Math.min(1, s)) * (q[0] < 0 ? .5 : -.5), ang = q[4] + open, ca = Math.cos(ang), sa = Math.sin(ang);
-                const pt = th => {
-                    const rr = 1 + .08 * Math.sin(3 * th + e.ph1 + i) + .04 * Math.sin(5 * th + e.ph2),
-                          lx = Math.cos(th) * q[2] * rr, ly = Math.sin(th) * q[3] * rr,
-                          px = q[0] + lx * ca - ly * sa, py = q[1] + lx * sa + ly * ca;
-                    return T(px * s * R, (ay0 + (py - ay0) * s) * R);
-                };
-                const pts = [];
-                for (let k = 0; k < 26; k++) pts.push(pt(k / 26 * Math.PI * 2));
-                B.fill(pts, CC.red);
-                if (q[6] && R >= 12 && s > .4) {
-                    const arc = [];
-                    for (let k = 0; k <= 14; k++) arc.push(pt(Math.PI * (1.18 + .64 * k / 14)));
-                    strokeRange(arc, 0, Math.min(1, (s - .4) / .5), CC.line, lw * .8);
-                }
-            });
-            const fr = eo((a - P.length * st - 80) / 520);
-            if (fr > 0 && R > 3) {
-                const sp = [], scl = [], turns = R < 20 ? Math.min(e.turns, 1.3) : R < 32 ? e.turns * .8 : e.turns;
-                for (let i = 0; i <= 70; i++) {
-                    const u = i / 70, th = e.ph1 + u * turns * Math.PI * 2, rr = R * (.08 + .57 * u);
-                    sp.push(T(Math.cos(th) * rr * 1.05, Math.sin(th) * rr * .72 - .12 * R));
-                }
-                strokeRange(sp, 0, fr, CC.line, lw);
-                if (R >= 14) {
-                    for (let i = 0; i <= 36; i++) {
-                        const u = i / 36;
-                        scl.push(T((-.72 + 1.5 * u) * R, .36 * R + .16 * R * Math.abs(Math.sin(u * Math.PI * 3))));
-                    }
-                    strokeRange(scl, 0, fr, CC.line, lw);
-                }
-            }
-        }
-
-        function wpt(S, l, x, y) {
-            const t = (NOW - l.birth) / 1000;
-            if (t > 0 && t < 2.5) {
-                const hh = Math.max(0, (l.y - y) / S), d = Math.exp(-t * 3.2), dir = l.id % 2 ? 1 : -1;
-                x += S * .07 * hh * d * Math.sin(t * 11) * dir;
-                y += S * .035 * hh * d * Math.sin(t * 11 + 1.2);
-            }
-            if (l.lean) {
-                const hh = Math.min(2.5, Math.max(0, (l.y - y) / S)), f = hh * hh * .5 + hh * .5;
-                x += l.lean[0] * S * .1 * f;
-                y += l.lean[1] * S * .05 * f;
-            }
-            return [x, y];
-        }
-
-        function drawStem(e, l, age, kk, S, f, amp, layer, frO) {
-            const fr = frO != null ? frO : eo((age - e.d0) / e.dur) * kk;
-            if (fr <= 0) return;
-            const j = jit(e.id, f, amp), P = e.pts.map(p => wpt(S, l, l.x + p[0] * S + j[0], l.y + p[1] * S + j[1]));
-            for (const sg of e.segs) {
-                if (sg.layer !== layer) continue;
-                const b = Math.min(sg.u1, fr);
-                if (b <= sg.u0) continue;
-                strokeRange(P, sg.u0, b, CC.blue, S * .022 * (e.w || 1));
-            }
-            for (const th of e.thorns) {
-                if (fr > th.u && layerAt(e.segs, th.u) === layer) {
-                    const [p, a] = at(P, th.u), d = a + th.s * 2.3, L = S * .045;
-                    B.stroke([p, [p[0] + Math.cos(d) * L, p[1] + Math.sin(d) * L]], CC.blue, S * .022);
-                }
-            }
-        }
-
-        function drawEl(e, l, age, kk, S, f, amp) {
-            const j = jit(e.id, f, amp), wx = (x, y) => wpt(S, l, l.x + x * S + j[0], l.y + y * S + j[1]);
-            if (e.t === 'leaf') {
-                const sc = spr((age - e.d0) / 1000, 7, 15) * kk;
-                if (sc <= 0) return;
-                const p = wx(e.x, e.y);
-                leaf(p[0], p[1], e.a + j[2], e.L * S * sc, e.bend);
-            } else {
-                const a = age - e.d0;
-                if (a < 0 || kk <= .001) return;
-                const p = wx(e.x, e.y);
-                rose(p[0], p[1], e.R * S * kk, e.rot + j[2], e, a);
-            }
-        }
-
-        function render(now) {
-            const S = Sd, act = letters.filter(l => !l.dead);
-            NOW = now;
-            for (const l of letters) {
-                let tx = 0, ty = 0;
-                if (!l.dead && l.ch !== ' ' && mx != null) {
-                    const r = gc.getBoundingClientRect(), px = mx - r.left, py = my - r.top,
-                          dx = px - l.x, dy = py - (l.y - S * .6), d = Math.hypot(dx, dy), reach = Math.max(260, S * 3.2);
-                    if (d < reach && d > 1) {
-                        const w = 1 - d / reach, s = w * w * (3 - 2 * w);
-                        tx = dx / d * s;
-                        ty = dy / d * s;
-                    }
-                }
-                const c = l.lean || (l.lean = [0, 0]);
-                c[0] += (tx - c[0]) * .07;
-                c[1] += (ty - c[1]) * .07;
-            }
-            const f = Math.floor(now / 120), amp = Math.max(.8, S * .01), kd = l => l.dead ? 1 - eo((now - l.dead) / 260) : 1;
-            const draw = layer => {
-                for (const l of letters) {
-                    if (l.ch === ' ' || !l.els) continue;
-                    const age = now - l.birth, kk = kd(l),
-                          each = e => {
-                              if (e.t === 'stem') drawStem(e, l, age, kk, S, f, amp, layer);
-                              else if (e.layer === layer) drawEl(e, l, age, kk, S, f, amp);
-                          };
-                    l.els.forEach(each);
-                    if (l.endEls) l.endEls.forEach(each);
-                    const i = act.indexOf(l), nx = i >= 0 ? act[i + 1] : null;
-                    if (l.tend && (l.dead || !nx || nx.ch === ' ')) {
-                        let fr = eo((now - l.tb - 150) / 450);
-                        if (l.cut != null) fr *= 1 - eo((now - l.cut) / 150) * Math.min(.85, 20 / (.6 * S));
-                        for (const e of l.tend) drawStem(e, l, age, kk, S, f, amp, layer, fr * kk);
-                    }
-                }
-            };
-            draw(0);
-            for (const l of letters) if (l.ch !== ' ' && !l.dead) B.text(l.ch, l.x, l.y, S, CC.text);
-            draw(1);
-        }
-
-        const BCOL = [['#fff1dc', '#b50903'], ['#ffe27a', '#b50903'], ['#fff1dc', '#b50903'], ['#ffb3d9', '#b50903'], ['#ffd25a', '#b50903']];
-        
-        function plant(x, y) {
-            const r = rng(Math.floor(Math.random() * 1e9)), c = BCOL[Math.floor(r() * 5)];
-            gifts.push({ x, y, R: 24 + r() * 22, rot: (r() - .5) * .8, c, t0: performance.now(), e: { ph1: r() * 6.28, ph2: r() * 6.28, turns: 1.6 + r() * .5 }, la: r() * 6.28 });
-            if (gifts.length > 60) gifts.shift();
-        }
-
-        function paintBg(now) {
-            g = bctx;
-            g.setTransform(dpr, 0, 0, dpr, 0, 0);
-            g.clearRect(0, 0, BW, BH);
-            const o = [CC.red, CC.line, CC.blue];
-            gifts = gifts.filter(q => now - q.t0 < 20000);
-            for (const q of gifts) {
-                const a = now - q.t0;
-                g.globalAlpha = 1 - eo((a - 18500) / 1500);
-                CC.red = q.c[0];
-                CC.line = q.c[1];
-                CC.blue = '#ffd25a';
-                leaf(q.x, q.y + q.R * .3, q.la, q.R * .9 * Math.min(1, spr(a / 1000 - .4, 7, 15)), .5);
-                leaf(q.x, q.y + q.R * .3, q.la + 3.1, q.R * .8 * Math.min(1, spr(a / 1000 - .5, 7, 15)), -.5);
-                rose(q.x, q.y, q.R, q.rot, q.e, a);
-            }
-            g.globalAlpha = 1;
-            CC.red = o[0];
-            CC.line = o[1];
-            CC.blue = o[2];
-            g = gctx;
-        }
-
-        function frame(now) {
-            requestAnimationFrame(frame);
-            const dt = Math.min(64, now - (lt || now));
-            lt = now;
-            paintBg(now);
-            if (!W) return;
-            const k = 1 - Math.exp(-dt / 80);
-            Sd += (St - Sd) * k;
-            cx += (cxT - cx) * k;
-            cy += (cyT - cy) * k;
-            for (const l of letters) if (!l.dead && l.tx != null) {
-                l.x += (l.tx - l.x) * k;
-                l.y += (l.ty - l.y) * k;
-            }
-            letters = letters.filter(l => !(l.dead && now - l.dead > 300));
-            g.setTransform(dpr, 0, 0, dpr, 0, 0);
-            g.clearRect(0, 0, W, H);
-            render(now);
-            const live = letters.some(l => !l.dead);
-            hint.style.opacity = live ? 0 : 1;
-            if (live || document.activeElement === gi) {
-                const S = Sd, on = now - lastKey < 500 || Math.floor(now / 530) % 2 === 0, hf = eo((now - t0) / 600);
-                if (on && hf > 0 && live) {
-                    const h = .8 * S * hf, w = Math.max(2, S * .03);
-                    B.rect(cx - w / 2, cy - h / 2, w, h, CC.text);
-                }
-            }
-        }
-
-        const mark = () => { lastKey = performance.now(); kd = true; setTimeout(() => kd = false, 0); };
-
-        function add(ch, now) {
-            const A = letters.filter(l => !l.dead), last = A[A.length - 1];
-            if (ch === ' ') {
-                if (last && last.ch !== ' ') { last.cut = now; genEnd(last, now - last.birth); }
-                letters.push({ ch: ' ', id: uid++, birth: now, els: [] });
-                layout();
-                return;
-            }
-            const same = last && last.ch !== '',
-                  l = { ch, id: uid++, birth: now, tb: now, ws: same ? last.ws : Math.floor(Math.random() * 1e9), wi: same ? last.wi + 1 : 0, prev: same ? last : null };
-            gen(l);
-            letters.push(l);
-            layout();
-        }
-
-        function wither(now) {
-            const A = letters.filter(l => !l.dead), last = A[A.length - 1];
-            if (!last) return;
-            last.dead = now;
-            const pv = A[A.length - 2];
-            if (pv && pv.ch !== ' ') { pv.cut = null; pv.endEls = null; pv.tb = now; }
-            layout();
-        }
-
-        addEventListener('keydown', e => {
-            if (!unlocked || document.activeElement !== gi || e.metaKey || e.ctrlKey || e.altKey) return;
-            const now = performance.now();
-            if (e.key === 'Backspace') { e.preventDefault(); mark(); wither(now); return; }
-            if (e.key === 'Enter') { e.preventDefault(); mark(); letters = []; layout(); return; }
-            if (e.key.length !== 1) return;
-            e.preventDefault();
-            mark();
-            add(e.key, now);
-        });
-
-        gi.value = SENT;
-        gi.addEventListener('input', () => {
-            if (kd) { gi.value = SENT; iv = SENT; return; }
-            const old = iv, cur = gi.value;
-            let p = 0;
-            while (p < old.length && p < cur.length && old[p] === cur[p]) p++;
-            let dels = old.length - p;
-            if (p === 0 && old[0] === SENT && old.length > 1) dels -= 1;
-            const now = performance.now();
-            lastKey = now;
-            for (let i = 0; i < dels; i++) wither(now);
-            for (const ch of cur.slice(p)) {
-                if (ch === SENT) continue;
-                if (ch.charCodeAt(0) === 10) { letters = []; layout(); }
-                else add(ch, now);
-            }
-            gi.value = SENT;
-            iv = SENT;
-        });
-
-        stage.addEventListener('pointerdown', () => gi.focus({ preventScroll: true }));
-        
-        document.addEventListener('pointerdown', e => {
-            if (!unlocked || e.target.closest('a,button,video,input,#lock')) return;
-            if (stage.contains(e.target)) {
-                const r = stage.getBoundingClientRect();
-                let x = e.clientX, y = e.clientY;
-                for (let i = 0; i < 30; i++) {
-                    const px = Math.random() * BW, py = Math.random() * BH;
-                    if (px < r.left - 24 || px > r.right + 24 || py < r.top - 24 || py > r.bottom + 24) { x = px; y = py; break; }
-                }
-                plant(x, y);
-            } else plant(e.clientX, e.clientY);
-        });
-
-        addEventListener('pointermove', e => { mx = e.clientX; my = e.clientY; });
-        addEventListener('pointerup', e => { if (e.pointerType !== 'mouse') mx = null; });
-        addEventListener('resize', () => { gResize(); bgResize(); });
-        
-        gResize();
-        bgResize();
-        (document.fonts ? document.fonts.load('400 100px ' + F) : Promise.resolve()).catch(() => {}).then(() => { cache = {}; layout(true); });
-        requestAnimationFrame(frame);
-
-        // Gaze-tracking anime widget
-        (function() {
-            const TF = 64, LF = .26, DZ = .12, BGC = '#e71109', FX = 625 / 1280, FY = 295 / 720,
-                  cv = $('character-canvas'), c2 = cv.getContext('2d', { alpha: false }),
-                  dot = $('cursor-dot'), ring = $('cursor-ring'), card = $('anime-card'),
-                  frames = [], center = new Image();
-            
-            for (let i = 0; i < TF; i++) {
-                const im = new Image();
-                im.src = `https://raw.githubusercontent.com/Memory-reboot/Trying-something-new/main/frames/frame_${i}.webp`;
-                frames[i] = im;
-            }
-            center.src = 'https://raw.githubusercontent.com/Memory-reboot/Trying-something-new/main/frames/center.webp';
-
-            let px = innerWidth / 2, py = innerHeight / 2, rx = px, ry = py, ta = 0, sa = 0, eye = true,
-                lm = performance.now(), cw = 0, ch = 0, dx0 = 0, dy0 = 0, dw = 0, dh = 0, fx = 0, fy = 0, dzr = 0;
-
-            function rs() {
-                const d = devicePixelRatio || 1, r = card.getBoundingClientRect();
-                cw = r.width;
-                ch = r.height;
-                cv.width = Math.floor(cw * d);
-                cv.height = Math.floor(ch * d);
-                c2.scale(d, d);
-                const vr = 1280 / 720;
-                if (cw / ch > vr) { dw = cw; dh = dw / vr; dx0 = 0; dy0 = (ch - dh) / 2; }
-                else { dh = ch; dw = dh * vr; dy0 = 0; dx0 = (cw - dw) / 2; }
-                fx = r.left + dx0 + dw * FX;
-                fy = r.top + dy0 + dh * FY;
-                dzr = Math.min(cw, ch) * DZ;
-            }
-
-            addEventListener('resize', rs);
-            addEventListener('scroll', rs);
-            setTimeout(rs, 300);
-            setTimeout(rs, 1500);
-
-            function up(x, y) {
-                px = x;
-                py = y;
-                lm = performance.now();
-                const dx = x - fx, dy = y - fy;
-                if (Math.hypot(dx, dy) <= dzr) eye = true;
-                else { eye = false; ta = Math.atan2(dy, dx); }
-            }
-
-            addEventListener('mousemove', e => { up(e.clientX, e.clientY); dot.style.left = e.clientX + 'px'; dot.style.top = e.clientY + 'px'; });
-            addEventListener('touchstart', e => { if (e.touches[0]) up(e.touches[0].clientX, e.touches[0].clientY); }, { passive: true });
-            addEventListener('touchmove', e => { if (e.touches[0]) up(e.touches[0].clientX, e.touches[0].clientY); }, { passive: true });
-
-            const la = (c, t, f) => {
-                let d = t - c;
-                while (d < -Math.PI) d += 2 * Math.PI;
-                while (d > Math.PI) d -= 2 * Math.PI;
-                return c + d * f;
-            };
-
-            function an(now) {
-                requestAnimationFrame(an);
-                rx += (px - rx) * .18;
-                ry += (py - ry) * .18;
-                ring.style.left = rx + 'px';
-                ring.style.top = ry + 'px';
-                if (now - lm > 3500) eye = true;
-                sa = la(sa, ta, LF);
-                const na = (sa % (2 * Math.PI) + 2 * Math.PI) % (2 * Math.PI),
-                      fi = Math.round(na / (2 * Math.PI) * TF) % TF,
-                      im = eye ? center : frames[fi];
-                ring.classList.toggle('eye', eye);
-                c2.fillStyle = BGC;
-                c2.fillRect(0, 0, cw, ch);
-                if (im && im.complete && im.naturalWidth > 0) c2.drawImage(im, dx0, dy0, dw, dh);
-            }
-            requestAnimationFrame(an);
-        })();
-    </script>
+<!-- background layers -->
+<div id="wa" aria-hidden="true"></div>
+<canvas id="bg" aria-hidden="true"></canvas>
+<div id="fl" aria-hidden="true"></div>
+
+<!-- lock screen -->
+<div id="lock"><div id="lc">
+  <div class="ic">💌</div>
+  <div class="tt">Enter password to unlock your surprise</div>
+  <input type="password" id="inp" placeholder="First 5-digit of Password" inputmode="numeric" autocomplete="off">
+  <button type="button" id="go">Surprise Me ✨</button>
+  <div id="err"></div>
+</div></div>
+
+<div class="cd" id="cursor-dot"></div>
+<div class="cr" id="cursor-ring"></div>
+<button id="fs" type="button" aria-label="Toggle full screen">⛶</button>
+
+<main class="page">
+  <header class="hero rv" style="--d:.4s">
+    <span class="chip"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg> A Special Birthday Surprise</span>
+    <h1>Happy Birthday</h1>
+    <div class="nm" id="nm"></div>
+    <div id="garden"><canvas id="gc"></canvas></div>
+  </header>
+
+  <!-- card 1: gaze-tracking character -->
+  <section class="glass rv" style="--d:.2s"><div class="ac" id="anime-card"><canvas id="character-canvas"></canvas></div></section>
+  <!-- card 2: birthday wish -->
+  <section class="glass rv"><p class="wish" id="wish-text"></p></section>
+  <!-- card 3: video + synced lyrics -->
+  <section class="glass rv">
+    <div class="vc"><video id="vid" controls playsinline src="https://raw.githubusercontent.com/Memory-reboot/Trying-something-new/main/%5BEnglish%20Cover%5D%20Tada%20Koe%20Hitotsu%20(%E3%81%9F%E3%81%A0%E5%A3%B0%E4%B8%80%E3%81%A4)%20-%20Rokudenashi(360P).mp4"></video></div>
+    <div class="lb"><div class="lt">♪ Made with love &amp; care</div><span id="line">Press play to begin</span></div>
+  </section>
+
+  <!-- gift link -->
+  <div class="rv">
+    <a class="drive" id="pdf-anchor" href="#" target="_blank" rel="noopener">
+      <span class="ph">🎁</span>
+      <img id="pdf-thumb" alt="" onerror="this.remove()">
+      <span class="cap"><span><b>Your Special Gift 💝</b><small>Tap to open surprise file, Enter the last 5-digits of password</small></span><span class="go">↗</span></span>
+    </a>
+  </div>
+</main>
+
+<script>
+/* ==========================================================================
+   1. READ SETTINGS  -  pulls everything from the EASY SETTINGS block in the CSS
+   ========================================================================== */
+const rootStyles = getComputedStyle(document.documentElement);
+const getCssVar = n => rootStyles.getPropertyValue(n).trim().replace(/^["']|["']$/g, '');
+const num = n => Number(getCssVar(n));
+
+const PASSWORD = getCssVar('--password');
+const TITLE_NAME = getCssVar('--title-name');
+const PDF_LINK = getCssVar('--pdf-link');
+const WISH_TEXT = getCssVar('--wish-text');
+// typing lines: slots 1-5 (empty ones are skipped) + the fixed final line
+const GARDEN_LINES = [1,2,3,4,5].map(i => getCssVar('--garden-line-' + i)).filter(t => t.trim()).concat(getCssVar('--garden-final-line') || 'Pika');
+const TYPE_MS = num('--typing-speed-ms'), ERASE_MS = num('--erase-speed-ms'), LINE_HOLD_MS = num('--line-hold-ms');
+const FINAL_HOLD_MS = num('--final-hold-seconds') * 1000, ROSE_LIFE_MS = num('--rose-life-seconds') * 1000, ROSE_FADE_MS = 1500;
+
+/* Song lyrics: [seconds, text] */
+const lyricsData = [
+  [20.35,"They gave me the pieces of every moment I love."],[27.2,"All by myself, alone, and the pages of the journal."],
+  [33.5,"I fill with the words, \"When will the truth be told?\""],[40,"Whisper the song that will keep me alive."],
+  [44.4,"Love will be back once again, and again it will stay."],[49.6,"Far into the night, until the dawn is here."],
+  [53,"Every breath that you take will be here, and be near."],[58,"Looking through every memory to keep myself together."],
+  [63.3,"One love, see you again, see you again."],[67.3,"Until the warmth and light glow in the night."],
+  [71.9,"Take one breath. Live."],[75.3,"Live on."],[78.8,"So that I won't cry beside these gentle days."],[90.1,"Keep myself together."]
+];
+
+const $ = id => document.getElementById(id);
+const lock = $('lock'), lc = $('lc'), inp = $('inp'), err = $('err'), line = $('line'), vid = $('vid'), fsBtn = $('fs');
+$('nm').textContent = '✨ ' + TITLE_NAME + ' ✨';
+$('wish-text').textContent = WISH_TEXT;
+$('pdf-anchor').href = PDF_LINK;
+$('pdf-thumb').src = getCssVar('--pdf-thumbnail');   /* gift card picture */
+
+/* ==========================================================================
+   2. DOODLE WALLPAPER  -  hearts, stars, gifts... tiled behind everything
+   ========================================================================== */
+const D = {
+  heart:'<path d="M20 34C6 24 4 14 11 9c5-3 9 1 9 4 0-3 4-7 9-4 7 5 5 15-9 25z"/>',
+  star:'<path d="M20 4L24.5 15 36 16 27 24 30 36 20 29.5 10 36 13 24 4 16 15.5 15z"/>',
+  cloud:'<path d="M10 30C3 30 3 20 10 20 10 11 22 9 25 17 33 14 38 24 31 30z"/>',
+  smiley:'<circle cx="20" cy="20" r="15"/><path d="M13 17v1M27 17v1M12 24c4 7 12 7 16 0"/>',
+  sparkle:'<path d="M20 3C21 14 26 19 37 20 26 21 21 26 20 37 19 26 14 21 3 20 14 19 14 20 3z"/>',
+  gift:'<path d="M8 12h24v20H8zM4 12h32v6H4zM20 12v20M8 20h24"/>'
+};
+const spots = [[25,30,'heart',-15],[110,45,'star',12],[190,20,'sparkle',8],[270,55,'gift',10],[60,130,'smiley',0],[140,110,'heart',-20],[220,140,'star',18],[300,115,'sparkle',-10],[30,210,'gift',15],[110,230,'cloud',-8],[190,200,'smiley',12],[280,225,'heart',-5],[70,300,'star',-15],[150,290,'sparkle',20],[230,310,'gift',-12]];
+let tile = '<svg xmlns="http://www.w3.org/2000/svg" width="340" height="340" viewBox="0 0 340 340"><g fill="none" stroke="rgba(255,235,242,0.6)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">';
+spots.forEach(p => tile += '<g transform="translate(' + p[0] + ' ' + p[1] + ') rotate(' + p[3] + ' 20 20) scale(.85)">' + D[p[2]] + '</g>');
+$('wa').style.backgroundImage = 'url("data:image/svg+xml,' + encodeURIComponent(tile + '</g></svg>') + '")';   /* size is controlled in CSS (--doodle-size) */
+
+/* ==========================================================================
+   3. FALLING PETALS  -  small flowers drifting down both screen edges
+   ========================================================================== */
+const PETAL_COLORS = ['#ffb3d9', '#fff', '#ffe27a', '#ff85a1'];
+for (let side = 0; side < 2; side++) for (let n = 0; n < 7; n++) {
+  const f = document.createElement('div'), sz = 16 + Math.random() * 16;
+  let pt = '';
+  for (let i = 0; i < 5; i++) pt += '<ellipse cy="-7" rx="4" ry="6" transform="rotate(' + (i * 72) + ')"/>';
+  f.className = 'fx';
+  f.style[side ? 'right' : 'left'] = (Math.random() * 5).toFixed(1) + 'vw';
+  f.style.setProperty('--s', (Math.random() * 26 - 13).toFixed(0) + 'px');
+  f.style.animationDuration = (10 + Math.random() * 9).toFixed(1) + 's';
+  f.style.animationDelay = (-Math.random() * 20).toFixed(1) + 's';
+  f.innerHTML = '<svg width="' + sz + '" height="' + sz + '" viewBox="-14 -14 28 28"><g fill="' + PETAL_COLORS[n % 4] + '" stroke="rgba(0,0,0,.15)" stroke-width=".6">' + pt + '</g><circle r="3" fill="#ffe08a"/></svg>';
+  $('fl').appendChild(f);
+}
+
+/* ==========================================================================
+   4. LOCK SCREEN, FULL SCREEN & LYRICS
+   ========================================================================== */
+let unlocked = false;
+setTimeout(() => { lc.classList.add('show'); inp.focus(); }, 1200);
+
+const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { threshold: .15 });
+
+/* Full screen: must be called from a tap/click. Not supported on iPhone Safari (use "Add to Home Screen" there). */
+const fsEl = () => document.fullscreenElement || document.webkitFullscreenElement;
+function enterFullscreen() {
+  const el = document.documentElement, req = el.requestFullscreen || el.webkitRequestFullscreen;
+  if (req) { try { const p = req.call(el); if (p && p.catch) p.catch(() => {}); } catch (e) {} }
+}
+function toggleFullscreen() {
+  if (fsEl()) { (document.exitFullscreen || document.webkitExitFullscreen).call(document); } else enterFullscreen();
+}
+function syncFsButton() {
+  const ok = !!(document.documentElement.requestFullscreen || document.documentElement.webkitRequestFullscreen);
+  fsBtn.classList.toggle('show', unlocked && ok && !fsEl());      /* show only when not already full screen */
+}
+fsBtn.addEventListener('click', toggleFullscreen);
+document.addEventListener('fullscreenchange', syncFsButton);
+document.addEventListener('webkitfullscreenchange', syncFsButton);
+
+function unlock() {
+  if (inp.value.trim() !== PASSWORD) {                              /* wrong password */
+    err.textContent = 'Incorrect password, please try again.';
+    lc.classList.remove('shake'); void lc.offsetWidth; lc.classList.add('shake');
+    inp.value = ''; inp.focus(); return;
+  }
+  unlocked = true;
+  enterFullscreen();                                                /* go full screen on the unlock tap */
+  lock.classList.add('open');
+  document.body.classList.remove('locked');
+  document.querySelectorAll('.rv').forEach(el => io.observe(el));
+  setTimeout(() => { gResize(); bgResize(); startAutoTyping(); syncFsButton(); }, 900);
+}
+$('go').addEventListener('click', unlock);
+inp.addEventListener('keydown', e => { if (e.key === 'Enter') unlock(); });
+
+const lyricBox = document.querySelector('.lb');
+lyricBox.addEventListener('transitionend', e => { if (e.propertyName === 'height') lyricBox.style.height = ''; });   /* back to auto after animating */
+function setLine(t) {                                               /* swap the lyric line: fade out, resize box smoothly, fade in */
+  if (line.textContent === t) return;
+  line.classList.remove('active');
+  setTimeout(() => {
+    const h0 = lyricBox.offsetHeight;                               /* height with the old text */
+    line.textContent = t;
+    lyricBox.style.height = 'auto';
+    const h1 = lyricBox.offsetHeight;                               /* height with the new text */
+    lyricBox.style.height = h0 + 'px';
+    void lyricBox.offsetHeight;                                     /* apply the start height, then animate to the new one */
+    lyricBox.style.height = h1 + 'px';
+    if (t) setTimeout(() => line.classList.add('active'), 120);     /* new line fades in as the box settles */
+  }, 250);
+}
+vid.addEventListener('timeupdate', () => {
+  let c = '';
+  for (const l of lyricsData) if (vid.currentTime >= l[0]) c = l[1];
+  setLine(c);
+});
+
+/* ==========================================================================
+   5. TYPE GARDEN ENGINE  -  draws the growing letters, stems and roses.
+      (You normally don't need to edit anything in this section.)
+   ========================================================================== */
+const FONT = '"Abril Fatface","Playfair Display",Georgia,serif';
+const CC = { red:'#fff1dc', blue:'#ffd25a', line:'#b50903', text:'#fff8ee', vein:'#b50903' };   /* flower, stem/leaf, flower lines, letters, leaf veins */
+const gc = $('gc'), bgc = $('bg'), stage = $('garden');
+let g = gc.getContext('2d');
+const gctx = g, bctx = bgc.getContext('2d');
+let W=0,H=0,dpr=1,letters=[],uid=1,cache={},Sd=0,St=0,wrapped=false,cx=0,cy=0,cxT=0,cyT=0,lastKey=0,mx=null,my=0,t0=performance.now(),lt=0,NOW=0,gifts=[],BW=0,BH=0;
+
+/* --- small math helpers --- */
+const hh_ = n => { const x = Math.sin(n) * 43758.5453; return x - Math.floor(x); };
+const spr = (t,k=7,w=16) => t <= 0 ? 0 : 1 - Math.exp(-t*k) * Math.cos(t*w);   /* springy ease */
+const eo = t => t <= 0 ? 0 : t >= 1 ? 1 : 1 - Math.pow(1-t, 3);                /* smooth ease-out */
+function rng(seed) { let s = seed|0; return () => { s = (s + 0x6D2B79F5)|0; let t = Math.imul(s ^ (s>>>15), 1|s); t = (t + Math.imul(t ^ (t>>>7), 61|t)) ^ t; return ((t ^ (t>>>14))>>>0) / 4294967296; }; }
+const bez = (a,b,c,d,n) => { const P=[]; for (let i=0;i<=n;i++){ const t=i/n,u=1-t; P.push([u*u*u*a[0]+3*u*u*t*b[0]+3*u*t*t*c[0]+t*t*t*d[0], u*u*u*a[1]+3*u*u*t*b[1]+3*u*t*t*c[1]+t*t*t*d[1]]); } return P; };
+const at = (P,u) => { const n=P.length, i=Math.min(n-2, Math.max(1, Math.round(u*(n-1)))); return [P[i], Math.atan2(P[i+1][1]-P[i-1][1], P[i+1][0]-P[i-1][0])]; };
+const jit = (id,f,a) => a ? [(hh_(id*1.37+f*7.13)*2-1)*a, (hh_(id*2.71+f*3.11)*2-1)*a, (hh_(id*5.3+f*1.7)*2-1)*.035] : [0,0,0];   /* hand-drawn wobble */
+
+/* --- drawing primitives (smooth curves through points) --- */
+function path(c,p,closed) {
+  const n=p.length; if (n<2) return;
+  const m=(a,b)=>[(a[0]+b[0])/2,(a[1]+b[1])/2];
+  if (closed) { const s=m(p[n-1],p[0]); c.moveTo(s[0],s[1]); for (let i=0;i<n;i++){ const q=m(p[i],p[(i+1)%n]); c.quadraticCurveTo(p[i][0],p[i][1],q[0],q[1]); } c.closePath(); }
+  else { c.moveTo(p[0][0],p[0][1]); for (let i=1;i<n-1;i++){ const q=m(p[i],p[i+1]); c.quadraticCurveTo(p[i][0],p[i][1],q[0],q[1]); } c.lineTo(p[n-1][0],p[n-1][1]); }
+}
+const B = {
+  fill:   (p,col) => { g.beginPath(); path(g,p,true); g.fillStyle=col; g.fill(); },
+  stroke: (p,col,w) => { g.beginPath(); path(g,p,false); g.strokeStyle=col; g.lineWidth=w; g.lineCap='round'; g.lineJoin='round'; g.stroke(); },
+  rect:   (x,y,w,h,col) => { g.fillStyle=col; g.fillRect(x,y,w,h); },
+  text:   (ch,x,y,S,col) => {                                       /* letter = dark outline + cream fill (readable over flowers) */
+    g.font = `400 ${S}px ${FONT}`; g.textAlign='center'; g.textBaseline='alphabetic'; g.lineJoin='round';
+    g.strokeStyle='#4a0305'; g.lineWidth=S*.05; g.strokeText(ch,x,y); g.fillStyle=col; g.fillText(ch,x,y);
+  }
+};
+
+/* --- plant shapes: vines, curls, weaving over/under the letter --- */
+function vine(base,dir,len,amp,waves,ph,bend,n) {
+  n=n||40; const P=[[base[0],base[1]]], st=len/n; let x=base[0], y=base[1];
+  for (let i=1;i<=n;i++){ const u=i/n, a=dir+bend*u+amp*Math.sin(u*Math.PI*waves+ph)*Math.min(1,u*3); x+=Math.cos(a)*st; y+=Math.sin(a)*st; P.push([x,y]); }
+  return P;
+}
+function curl(P,sign,rad) {
+  const n=P.length, e=P[n-1], a=Math.atan2(e[1]-P[n-2][1], e[0]-P[n-2][0]), c=[e[0]-Math.sin(a)*sign*rad, e[1]+Math.cos(a)*sign*rad], a0=Math.atan2(e[1]-c[1], e[0]-c[0]);
+  for (let i=1;i<=14;i++){ const u=i/14, t=a0+sign*u*Math.PI*1.6, rr=rad*(1-.5*u); P.push([c[0]+Math.cos(t)*rr, c[1]+Math.sin(t)*rr]); }
+  return P;
+}
+function weave(r,l0) {
+  const cuts=[], nc=1+Math.floor(r()*3); for (let i=0;i<nc;i++) cuts.push(.15+r()*.7); cuts.sort((a,b)=>a-b);
+  const segs=[]; let u0=0, layer=l0;
+  for (const c of cuts){ if (c<=u0) continue; segs.push({u0,u1:c,layer}); if (r()<.3) u0=Math.min(.98,c+.02+r()*.03); else u0=c; layer=1-layer; }
+  segs.push({u0,u1:1,layer}); return segs;
+}
+const layerAt = (segs,u) => { for (const s of segs) if (u>=s.u0 && u<=s.u1) return s.layer; return segs[segs.length-1].layer; };
+
+/* --- layout: measures the text and fits it inside the box --- */
+function mw(ch) {
+  if (cache[ch] != null) return cache[ch];
+  gctx.font = `400 100px ${FONT}`;
+  let w = gctx.measureText(ch).width / 100; if (ch === ' ') w *= 1.4;
+  return cache[ch] = w;
+}
+function layoutCore(A,W,H,pw) {
+  const maxW = W*.92, S0 = H*.34, LH = 2.1, ws = A.map(l => mw(l.ch)), words = []; /* maxW = max width share, S0 = max letter size */
+  let cur = null;
+  A.forEach((l,i) => { if (l.ch === ' ') { if (cur) { words.push(cur); cur = null; } words.push({sp:1, idx:[i]}); } else { if (!cur) cur = {idx:[]}; cur.idx.push(i); } });
+  if (cur) words.push(cur);
+  const lineW = (li,S) => { let e=li.length; while (e>0 && A[li[e-1]].ch===' ') e--; let w=0; for (let k=0;k<e;k++) w+=ws[li[k]]; return w*S; };
+  const wrap = S => { const lines=[[]]; let lw=0; for (const w of words){ const ww=w.idx.reduce((s,i)=>s+ws[i],0)*S; if (!w.sp && lw>0 && lw+ww>maxW){ lines.push([]); lw=0; } lines[lines.length-1].push(...w.idx); lw+=ww; } return lines; };
+  let lines = [A.map((_,i)=>i)];
+  const unit = lineW(lines[0],1); let S = unit>0 ? Math.min(S0, maxW/unit) : S0;
+  const multi = words.filter(w => !w.sp).length > 1; let wr = multi && (S < H*.1 || (pw && S < H*.14));
+  if (wr) { let lo=H*.03, hi=H*.15; for (let k=0;k<22;k++){ const mid=(lo+hi)/2, ls=wrap(mid); if (ls.every(li=>lineW(li,mid)<=maxW) && ls.length*LH*mid<=H*.82) lo=mid; else hi=mid; } S=lo; lines=wrap(S); if (lines.length<2) wr=false; }
+  const n=lines.length, lh=LH*S;
+  lines.forEach((li,k) => { let x=W/2-lineW(li,S)/2; const y=H/2+(k-(n-1)/2)*lh+.33*S; li.forEach(i => { const l=A[i], w=ws[i]*S; l.tx=x+w/2; l.ty=y; l.tw=w; x+=w; }); });
+  return { S, wrapped: wr };
+}
+function layout(snap) {
+  if (!W) return;
+  const A = letters.filter(l => !l.dead), res = layoutCore(A,W,H,wrapped); wrapped = res.wrapped;
+  A.forEach(l => { if (l.x == null) { l.x = l.tx; l.y = l.ty; } });
+  const S = res.S, last = A[A.length-1]; St = S;
+  cxT = last ? last.tx + last.tw/2 + .07*S : W/2; cyT = last ? last.ty - .33*S : H/2;
+  if (snap || !Sd) { Sd=S; cx=cxT; cy=cyT; A.forEach(l => { l.x=l.tx; l.y=l.ty; }); }
+}
+function gResize() {                                               /* size the garden canvas */
+  const r = gc.getBoundingClientRect(); if (!r.width) return;
+  dpr = window.devicePixelRatio || 1; W = r.width; H = r.height;
+  gc.width = Math.round(W*dpr); gc.height = Math.round(H*dpr); layout(true);
+}
+function bgResize() {                                              /* size the full-page rose canvas */
+  BW = innerWidth; BH = innerHeight; bgc.width = Math.round(BW*dpr); bgc.height = Math.round(BH*dpr);
+}
+
+/* --- growth: how each letter sprouts stems, leaves and roses --- */
+function wordParams(ws) { const r=rng(ws*7+13); return { roseP:.3+r()*.3, leafy:.6+r()*.8, lean:(r()-.5)*.6, big:.85+r()*.45, curvy:.8+r()*.6, bridgeP:Math.min(.95,.45+r()*.35), w:.5 }; }
+function grow(r,E,nid,p,o) {
+  const tip = o.tip || (r()<p.roseP ? 'rose' : r()<.45 ? 'fan' : r()<.6 ? 'leaf' : 'curl');
+  let P = o.pts || vine(o.base,o.dir,o.len,(.35+r()*.45)*p.curvy,1+r()*1.6,r()*6.28,(r()-.5)*1.2,40);
+  if (tip === 'curl') P = curl(P, r()<.5 ? -1 : 1, .05+r()*.05);
+  const segs = weave(r, o.layer0 != null ? o.layer0 : (r()<.5 ? 0 : 1)), dur = Math.max(320,(o.len||.8)*620), thorns=[], nt=Math.floor(r()*2.5);
+  for (let i=0;i<nt;i++) thorns.push({u:.15+r()*.65, s:r()<.5?-1:1});
+  E.push({t:'stem', id:nid(), pts:P, segs, d0:o.d0, dur, w:o.depth?.82:1, thorns});
+  const nl = Math.floor(r()*2.8*p.leafy); let sd = r()<.5 ? -1 : 1;
+  for (let i=0;i<nl;i++){ const u=.25+r()*.6, [q,a]=at(P,u); sd=-sd; E.push({t:'leaf', id:nid(), x:q[0], y:q[1], a:a+sd*(.55+r()*.5), L:(.14+r()*.2)*(o.depth?.8:1), bend:(r()-.5)*1.2, layer:layerAt(segs,u), d0:o.d0+dur*u}); }
+  const [tp,ta] = at(P,1), td = o.d0+dur*.8, tl = layerAt(segs,1);
+  if (tip === 'rose') {
+    const R=(.13+r()*.15)*p.big*(o.depth?.75:1), over=tp[1]>-.78 && tp[1]<.05 && Math.abs(tp[0])<p.w*.5, layer=over ? (r()<.22?1:0) : (r()<.6?1:tl);
+    E.push({t:'rose', id:nid(), x:tp[0], y:tp[1], R, rot:(r()-.5), ph1:r()*6.28, ph2:r()*6.28, turns:1.8+r(), layer, d0:td});
+    if (r()<.2){ const oo=ta+(r()<.5?1:-1)*1.3; E.push({t:'rose', id:nid(), x:tp[0]+Math.cos(oo)*R*1.4, y:tp[1]+Math.sin(oo)*R*1.4, R:R*(.6+r()*.3), rot:(r()-.5)*1.2, ph1:r()*6.28, ph2:r()*6.28, turns:1.8+r(), layer, d0:td+120}); }
+  } else if (tip === 'fan') {
+    const sp=.6+r()*.3; for (let j=0;j<2;j++) E.push({t:'leaf', id:nid(), x:tp[0], y:tp[1], a:ta+(j-.5)*sp, L:.2+r()*.2, bend:(j-.5)*.8, layer:tl, d0:td+j*60});
+  } else if (tip === 'leaf') {
+    E.push({t:'leaf', id:nid(), x:tp[0], y:tp[1], a:ta+(r()-.5)*.3, L:.16+r()*.16, bend:r()-.5, layer:tl, d0:td});
+  }
+  if (!o.depth && r()<.3){ const u=.35+r()*.35, [q,a]=at(P,u); grow(r,E,nid,p,{base:q, dir:a+(r()<.5?-1:1)*(.7+r()*.4), len:(o.len||.8)*(.35+r()*.2), d0:o.d0+dur*u, depth:1, layer0:layerAt(segs,u)}); }
+}
+function gen(l) {                                                  /* build all the plants for one letter */
+  const r = rng((l.ws ^ Math.imul(l.wi+1, 2654435761)) + Math.floor(Math.random()*1e6)), p = wordParams(l.ws), E = []; let k0 = 0;
+  const nid = () => l.id*100 + (k0++), w = mw(l.ch), inX = () => (r()-.5)*w*.7; p.w = w;
+  const nUp = 1 + (r()<.45 ? 1 : 0);
+  for (let i=0;i<nUp;i++) grow(r,E,nid,p,{base:[inX(),-r()*.3], dir:-Math.PI/2+p.lean*.5+(r()-.5)*.7, len:.6+r()*.5, d0:40+i*130, tip:l.wi===0&&i===0?'rose':null});
+  if (r()<.4) grow(r,E,nid,p,{base:[inX(),-.1-r()*.35], dir:Math.PI/2+(r()-.5)*.8, len:.35+r()*.35, d0:160});
+  if (l.prev && r()<p.bridgeP) {                                   /* vine linking this letter to the previous one */
+    const px=-(mw(l.prev.ch)+w)/2, a=[inX(),-.05-r()*.55], b=[px+(r()-.5)*.25,-.05-r()*.55], bulge=(r()<.55?-1:1)*(.4+r()*.4), dx=b[0]-a[0];
+    let P = bez(a,[a[0]+dx*.15,a[1]+bulge],[b[0]-dx*.15,b[1]+bulge*.9],b,40); if (r()<.45) P=P.slice(0,Math.floor(P.length*(.7+r()*.2)));
+    grow(r,E,nid,p,{pts:P, len:Math.abs(dx)+Math.abs(bulge), d0:90, tip:r()<.5?'curl':r()<.5?'leaf':'rose'});
+  }
+  if (l.wi===0) grow(r,E,nid,p,{base:[-w*.3,-.15-r()*.4], dir:Math.PI+(r()-.5)*1.2, len:.45+r()*.3, d0:120, tip:'curl'});
+  l.els = E; l.endEls = null;
+  const T=[], tr=rng(l.id*977+Math.floor(Math.random()*1e6));
+  grow(tr,T,()=>l.id*100+90+T.length,p,{base:[w*.25,-.1-tr()*.45], dir:(tr()-.5)*1.4, len:.45+tr()*.25, d0:0, tip:'curl', depth:1});
+  l.tend = T.filter(e => e.t==='stem').slice(0,1);
+}
+function genEnd(l,rel) {                                           /* extra flowers when a word ends (space) */
+  const r=rng(l.ws+l.wi*31+Math.floor(Math.random()*1e6)), p=wordParams(l.ws), E=[]; let k0=50;
+  const nid=()=>l.id*100+(k0++), w=mw(l.ch), n=1+Math.floor(r()*2.5); p.w=w;
+  for (let i=0;i<n;i++){ const dir=-Math.PI/2+.6+(i-(n-1)/2)*.9+(r()-.5)*.4; grow(r,E,nid,p,{base:[(r()-.2)*w*.6,-r()*.5], dir, len:.4+r()*.45, d0:rel+40+i*90, depth:1, tip:i===0||r()<.5?'rose':'fan'}); }
+  l.endEls = E;
+}
+
+/* --- drawing the parts: stem, leaf, rose --- */
+function strokeRange(P,a,b,col,w) {
+  const n=P.length-1, ia=a*n, ib=b*n, lerp=t=>{ const i=Math.min(n-1,Math.floor(t)), f=t-i; return [P[i][0]+(P[i+1][0]-P[i][0])*f, P[i][1]+(P[i+1][1]-P[i][1])*f]; };
+  const pts=[lerp(ia)]; for (let i=Math.floor(ia)+1;i<ib;i++) pts.push(P[i]); pts.push(lerp(ib));
+  if (pts.length>=2) B.stroke(pts,col,w);
+}
+function leaf(bx,by,a,L,bend) {
+  if (L<.5) return;
+  const ca=Math.cos(a), sa=Math.sin(a), px=-sa, py=ca, ax=u=>{ const b=Math.sin(Math.PI*u)*bend*.15*L; return [bx+ca*u*L+px*b, by+sa*u*L+py*b]; }, hw=u=>L*.18*Math.sin(Math.PI*Math.pow(u,.8)), N=12, s1=[], s2=[];
+  for (let i=0;i<=N;i++){ const u=i/N, c=ax(u), w=hw(u); s1.push([c[0]+px*w,c[1]+py*w]); s2.push([c[0]-px*w,c[1]-py*w]); }
+  const tip=ax(1), base=ax(0);
+  B.fill([base,...s1.slice(1,N),tip,tip,...s2.slice(1,N).reverse(),base], CC.blue);
+  if (L>6){ const v=[]; for (let i=0;i<=8;i++) v.push(ax(.08+.72*i/8)); B.stroke(v,CC.vein,Math.max(.8,L*.03)); }
+}
+function rose(cx,cy,R,rot,e,a) {
+  const cr=Math.cos(rot), sr=Math.sin(rot), T=(x,y)=>[cx+x*cr-y*sr, cy+x*sr+y*cr];
+  const P=[[0,-.36,.56,.54,0,0,0],[-.5,-.06,.6,.6,-.35,0,0],[.52,-.06,.6,.6,.35,0,0],[-.42,.3,.62,.48,.2,.12,1],[.47,.3,.62,.48,-.2,.12,1],[.05,.42,.56,.38,0,.14,0]];
+  const ay0=.5, lw=Math.max(.8,R*.045), st=85;
+  P.forEach((q,i) => {                                             /* petals open one after another */
+    const s=spr((a-i*st)/1000,8,14); if (s<=.001) return;
+    const open=(1-Math.min(1,s))*(q[0]<0?.5:-.5), ang=q[4]+open, ca=Math.cos(ang), sa=Math.sin(ang);
+    const pt=th=>{ const rr=1+.08*Math.sin(3*th+e.ph1+i)+.04*Math.sin(5*th+e.ph2), lx=Math.cos(th)*q[2]*rr, ly=Math.sin(th)*q[3]*rr, px=q[0]+lx*ca-ly*sa, py=q[1]+lx*sa+ly*ca; return T(px*s*R,(ay0+(py-ay0)*s)*R); };
+    const pts=[]; for (let k=0;k<26;k++) pts.push(pt(k/26*Math.PI*2)); B.fill(pts,CC.red);
+    if (q[6] && R>=12 && s>.4){ const arc=[]; for (let k=0;k<=14;k++) arc.push(pt(Math.PI*(1.18+.64*k/14))); strokeRange(arc,0,Math.min(1,(s-.4)/.5),CC.line,lw*.8); }
+  });
+  const fr=eo((a-P.length*st-80)/520);                             /* swirl lines in the centre */
+  if (fr>0 && R>3){
+    const sp=[], scl=[], turns=R<20?Math.min(e.turns,1.3):R<32?e.turns*.8:e.turns;
+    for (let i=0;i<=70;i++){ const u=i/70, th=e.ph1+u*turns*Math.PI*2, rr=R*(.08+.57*u); sp.push(T(Math.cos(th)*rr*1.05, Math.sin(th)*rr*.72-.12*R)); }
+    strokeRange(sp,0,fr,CC.line,lw);
+    if (R>=14){ for (let i=0;i<=36;i++){ const u=i/36; scl.push(T((-.72+1.5*u)*R, .36*R+.16*R*Math.abs(Math.sin(u*Math.PI*3)))); } strokeRange(scl,0,fr,CC.line,lw); }
+  }
+}
+function wpt(S,l,x,y) {                                            /* sway when a letter appears + lean toward the pointer */
+  const t=(NOW-l.birth)/1000;
+  if (t>0 && t<2.5){ const hh=Math.max(0,(l.y-y)/S), d=Math.exp(-t*3.2), dir=l.id%2?1:-1; x+=S*.07*hh*d*Math.sin(t*11)*dir; y+=S*.035*hh*d*Math.sin(t*11+1.2); }
+  if (l.lean){ const hh=Math.min(2.5,Math.max(0,(l.y-y)/S)), f=hh*hh*.5+hh*.5; x+=l.lean[0]*S*.1*f; y+=l.lean[1]*S*.05*f; }
+  return [x,y];
+}
+function drawStem(e,l,age,kk,S,f,amp,layer,frO) {
+  const fr = frO != null ? frO : eo((age-e.d0)/e.dur)*kk; if (fr<=0) return;
+  const j=jit(e.id,f,amp), P=e.pts.map(p => wpt(S,l,l.x+p[0]*S+j[0], l.y+p[1]*S+j[1]));
+  for (const sg of e.segs){ if (sg.layer!==layer) continue; const b=Math.min(sg.u1,fr); if (b<=sg.u0) continue; strokeRange(P,sg.u0,b,CC.blue,S*.022*(e.w||1)); }
+  for (const th of e.thorns) if (fr>th.u && layerAt(e.segs,th.u)===layer){ const [p,a]=at(P,th.u), d=a+th.s*2.3, L=S*.045; B.stroke([p,[p[0]+Math.cos(d)*L,p[1]+Math.sin(d)*L]],CC.blue,S*.022); }
+}
+function drawEl(e,l,age,kk,S,f,amp) {
+  const j=jit(e.id,f,amp), wx=(x,y)=>wpt(S,l,l.x+x*S+j[0], l.y+y*S+j[1]);
+  if (e.t==='leaf'){ const sc=spr((age-e.d0)/1000,7,15)*kk; if (sc<=0) return; const p=wx(e.x,e.y); leaf(p[0],p[1],e.a+j[2],e.L*S*sc,e.bend); }
+  else { const a=age-e.d0; if (a<0 || kk<=.001) return; const p=wx(e.x,e.y); rose(p[0],p[1],e.R*S*kk,e.rot+j[2],e,a); }
+}
+function render(now) {                                             /* draw back plants, then letters, then front plants */
+  const S=Sd, act=letters.filter(l => !l.dead); NOW=now;
+  for (const l of letters) {                                       /* plants lean toward the pointer */
+    let tx=0, ty=0;
+    if (!l.dead && l.ch!==' ' && mx!=null){ const r=gc.getBoundingClientRect(), px=mx-r.left, py=my-r.top, dx=px-l.x, dy=py-(l.y-S*.6), d=Math.hypot(dx,dy), reach=Math.max(260,S*3.2); if (d<reach && d>1){ const w=1-d/reach, s=w*w*(3-2*w); tx=dx/d*s; ty=dy/d*s; } }
+    const c=l.lean||(l.lean=[0,0]); c[0]+=(tx-c[0])*.07; c[1]+=(ty-c[1])*.07;
+  }
+  const f=Math.floor(now/120), amp=Math.max(.8,S*.01), kd=l=>l.dead ? 1-eo((now-l.dead)/260) : 1;
+  const draw = layer => {
+    for (const l of letters) {
+      if (l.ch===' ' || !l.els) continue;
+      const age=now-l.birth, kk=kd(l), each=e=>{ if (e.t==='stem') drawStem(e,l,age,kk,S,f,amp,layer); else if (e.layer===layer) drawEl(e,l,age,kk,S,f,amp); };
+      l.els.forEach(each); if (l.endEls) l.endEls.forEach(each);
+      const i=act.indexOf(l), nx=i>=0 ? act[i+1] : null;
+      if (l.tend && (l.dead || !nx || nx.ch===' ')){ let fr=eo((now-l.tb-150)/450); if (l.cut!=null) fr*=1-eo((now-l.cut)/150)*Math.min(.85,20/(.6*S)); for (const e of l.tend) drawStem(e,l,age,kk,S,f,amp,layer,fr*kk); }
+    }
+  };
+  draw(0);
+  for (const l of letters) if (l.ch!==' ' && !l.dead) B.text(l.ch,l.x,l.y,S,CC.text);
+  draw(1);
+}
+
+/* ==========================================================================
+   6. TAPPED ROSES  -  tap anywhere and a rose blooms in the page background
+   ========================================================================== */
+const ROSE_COLORS = [['#fff1dc','#b50903'],['#ffe27a','#b50903'],['#fff1dc','#b50903'],['#ffb3d9','#b50903'],['#ffd25a','#b50903']];   /* [petal, line] */
+function plant(x,y) {
+  const r=rng(Math.floor(Math.random()*1e9)), c=ROSE_COLORS[Math.floor(r()*ROSE_COLORS.length)];
+  gifts.push({ x, y, R:24+r()*22, rot:(r()-.5)*.8, c, t0:performance.now(), e:{ph1:r()*6.28, ph2:r()*6.28, turns:1.6+r()*.5}, la:r()*6.28 });
+  if (gifts.length > 60) gifts.shift();                            /* max 60 roses on screen */
+}
+function paintBg(now) {
+  g = bctx; g.setTransform(dpr,0,0,dpr,0,0); g.clearRect(0,0,BW,BH);
+  const o=[CC.red,CC.line,CC.blue];
+  gifts = gifts.filter(q => now - q.t0 < ROSE_LIFE_MS);
+  for (const q of gifts) {
+    const a=now-q.t0; g.globalAlpha = 1 - eo((a-(ROSE_LIFE_MS-ROSE_FADE_MS))/ROSE_FADE_MS);   /* fade out at the end */
+    CC.red=q.c[0]; CC.line=q.c[1]; CC.blue='#ffd25a';
+    leaf(q.x, q.y+q.R*.3, q.la,     q.R*.9*Math.min(1,spr(a/1000-.4,7,15)),  .5);
+    leaf(q.x, q.y+q.R*.3, q.la+3.1, q.R*.8*Math.min(1,spr(a/1000-.5,7,15)), -.5);
+    rose(q.x, q.y, q.R, q.rot, q.e, a);
+  }
+  g.globalAlpha=1; CC.red=o[0]; CC.line=o[1]; CC.blue=o[2]; g=gctx;
+}
+
+/* ==========================================================================
+   7. MAIN LOOP & AUTO-TYPING  -  the animated lines in the name box
+   ========================================================================== */
+function frame(now) {
+  requestAnimationFrame(frame);
+  const dt=Math.min(64,now-(lt||now)); lt=now;
+  paintBg(now);
+  if (!W) return;
+  const k=1-Math.exp(-dt/80); Sd+=(St-Sd)*k; cx+=(cxT-cx)*k; cy+=(cyT-cy)*k;
+  for (const l of letters) if (!l.dead && l.tx!=null){ l.x+=(l.tx-l.x)*k; l.y+=(l.ty-l.y)*k; }
+  letters = letters.filter(l => !(l.dead && now-l.dead>300));
+  g.setTransform(dpr,0,0,dpr,0,0); g.clearRect(0,0,W,H); render(now);
+  if (letters.some(l => !l.dead)) {                                /* blinking caret after the last letter */
+    const S=Sd, on=now-lastKey<500 || Math.floor(now/530)%2===0, hf=eo((now-t0)/600);
+    if (on && hf>0){ const h=.8*S*hf, w=Math.max(2,S*.03); B.rect(cx-w/2,cy-h/2,w,h,CC.text); }
+  }
+}
+function add(ch,now) {                                             /* add one letter (or a space) */
+  const A=letters.filter(l => !l.dead), last=A[A.length-1];
+  if (ch===' ') { if (last && last.ch!==' '){ last.cut=now; genEnd(last,now-last.birth); } letters.push({ch:' ', id:uid++, birth:now, els:[]}); layout(); return; }
+  const same = last && last.ch!==' ';
+  const l = { ch, id:uid++, birth:now, tb:now, ws:same?last.ws:Math.floor(Math.random()*1e9), wi:same?last.wi+1:0, prev:same?last:null };
+  gen(l); letters.push(l); layout();
+}
+function wither(now) {                                             /* remove the last letter */
+  const A=letters.filter(l => !l.dead), last=A[A.length-1]; if (!last) return;
+  last.dead=now; const pv=A[A.length-2]; if (pv && pv.ch!==' '){ pv.cut=null; pv.endEls=null; pv.tb=now; }
+  layout();
+}
+
+/* Types each line, waits, erases it, then the next. The final line ("Pika") stays on screen for
+   --final-hold-seconds, is erased, and the whole loop starts again. Empty lines are skipped. */
+function startAutoTyping() {
+  if (!GARDEN_LINES.length) return;
+  let idx = 0;
+  const isLast = () => idx === GARDEN_LINES.length - 1;
+
+  function typeLine() {
+    const text = GARDEN_LINES[idx]; let i = 0;
+    (function next() {
+      if (i < text.length) { const now=performance.now(); lastKey=now; add(text[i++], now); setTimeout(next, TYPE_MS); }
+      else setTimeout(eraseLine, isLast() ? FINAL_HOLD_MS : LINE_HOLD_MS);   /* last line stays longer */
+    })();
+  }
+  function eraseLine() {
+    let n = GARDEN_LINES[idx].length;
+    (function next() {
+      if (n > 0) { const now=performance.now(); lastKey=now; wither(now); n--; setTimeout(next, ERASE_MS); }
+      else { idx = (idx + 1) % GARDEN_LINES.length; setTimeout(typeLine, 500); }   /* wraps back to line 1 */
+    })();
+  }
+  setTimeout(typeLine, 800);
+}
+
+/* ==========================================================================
+   8. EVENTS & START-UP
+   ========================================================================== */
+document.addEventListener('pointerdown', e => {                    /* tap anywhere -> rose in the background */
+  if (!unlocked || e.target.closest('a,button,video,input,#lock')) return;
+  plant(e.clientX, e.clientY);
+});
+addEventListener('pointermove', e => { mx=e.clientX; my=e.clientY; });
+addEventListener('pointerup', e => { if (e.pointerType !== 'mouse') mx = null; });
+addEventListener('resize', () => { gResize(); bgResize(); });
+gResize(); bgResize();
+(document.fonts ? document.fonts.load('400 100px ' + FONT) : Promise.resolve()).catch(() => {}).then(() => { cache = {}; layout(true); });
+requestAnimationFrame(frame);
+
+/* ==========================================================================
+   9. GAZE-TRACKING CHARACTER  -  her eyes follow your mouse / finger
+   ========================================================================== */
+(function () {
+  const TF=64, LF=.26, DZ=.12, BGC='#e71109', FX=625/1280, FY=295/720;
+  const cv=$('character-canvas'), c2=cv.getContext('2d',{alpha:false}), dot=$('cursor-dot'), ring=$('cursor-ring'), card=$('anime-card');
+  const base='https://raw.githubusercontent.com/Memory-reboot/Trying-something-new/main/frames/', frames=[], center=new Image();
+  for (let i=0;i<TF;i++){ const im=new Image(); im.src=base+'frame_'+i+'.webp'; frames[i]=im; }   /* 64 look-direction frames */
+  center.src = base + 'center.webp';
+  let px=innerWidth/2, py=innerHeight/2, rx=px, ry=py, ta=0, sa=0, eye=true, lm=performance.now(), cw=0,ch=0,dx0=0,dy0=0,dw=0,dh=0,fx=0,fy=0,dzr=0;
+  function rs() {
+    const d=devicePixelRatio||1, r=card.getBoundingClientRect(); cw=r.width; ch=r.height;
+    cv.width=Math.floor(cw*d); cv.height=Math.floor(ch*d); c2.scale(d,d);
+    const vr=1280/720;
+    if (cw/ch>vr){ dw=cw; dh=dw/vr; dx0=0; dy0=(ch-dh)/2; } else { dh=ch; dw=dh*vr; dy0=0; dx0=(cw-dw)/2; }
+    fx=r.left+dx0+dw*FX; fy=r.top+dy0+dh*FY; dzr=Math.min(cw,ch)*DZ;
+  }
+  addEventListener('resize',rs); addEventListener('scroll',rs); setTimeout(rs,300); setTimeout(rs,1500);
+  function up(x,y){ px=x; py=y; lm=performance.now(); const dx=x-fx, dy=y-fy; if (Math.hypot(dx,dy)<=dzr) eye=true; else { eye=false; ta=Math.atan2(dy,dx); } }
+  addEventListener('mousemove', e => { up(e.clientX,e.clientY); dot.style.left=e.clientX+'px'; dot.style.top=e.clientY+'px'; });
+  addEventListener('touchstart', e => { if (e.touches[0]) up(e.touches[0].clientX,e.touches[0].clientY); }, {passive:true});
+  addEventListener('touchmove',  e => { if (e.touches[0]) up(e.touches[0].clientX,e.touches[0].clientY); }, {passive:true});
+  const la=(c,t,f)=>{ let d=t-c; while (d<-Math.PI) d+=2*Math.PI; while (d>Math.PI) d-=2*Math.PI; return c+d*f; };
+  function an(now) {
+    requestAnimationFrame(an);
+    rx+=(px-rx)*.18; ry+=(py-ry)*.18; ring.style.left=rx+'px'; ring.style.top=ry+'px';
+    if (now-lm>3500) eye=true;                                     /* look at the viewer when idle */
+    sa=la(sa,ta,LF);
+    const na=(sa%(2*Math.PI)+2*Math.PI)%(2*Math.PI), fi=Math.round(na/(2*Math.PI)*TF)%TF, im=eye?center:frames[fi];
+    ring.classList.toggle('eye',eye);
+    c2.fillStyle=BGC; c2.fillRect(0,0,cw,ch);
+    if (im && im.complete && im.naturalWidth>0) c2.drawImage(im,dx0,dy0,dw,dh);
+  }
+  requestAnimationFrame(an);
+})();
+</script>
 </body>
 </html>
