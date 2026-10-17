@@ -267,12 +267,20 @@ const FINAL_HOLD_MS = num('--final-hold-seconds') * 1000, ROSE_LIFE_MS = num('--
 
 /* Song lyrics: [seconds, text] */
 const lyricsData = [
-  [20.35,"They gave me the pieces of every moment I love."],[27.2,"All by myself, alone, and the pages of the journal."],
-  [33.5,"I fill with the words, \"When will the truth be told?\""],[40,"Whisper the song that will keep me alive."],
-  [44.4,"Love will be back once again, and again, it will stay."],[49.6,"Far into the night, until the dawn is here."],
-  [53,"Every breath that you take will be here, and be near."],[58,"Looking through every memory to keep myself together."],
-  [63.3,"One love, see you again, see you again."],[67.3,"Until the warmth and light glow in the night."],
-  [71.9,"Take one breath. Live."],[75.3,"Live on."],[78.8,"So every gentle day can bloom again."],[90.1,"Keep myself together."]
+  { time: 20.35, text: "She gave me pieces of every moment I kept." },
+  { time: 27.20, text: "All by myself, I opened the pages and wept." },
+  { time: 33.50, text: "I filled them with words, with things left unsaid." },
+  { time: 40.00, text: "Whispered the stories that lived in my head." },
+  { time: 44.40, text: "Same route, same hour, again and again." },
+  { time: 49.60, text: "Far into the morning, through sun and through rain." },
+  { time: 53.00, text: "Every small moment I noticed and kept." },
+  { time: 58.00, text: "Looking through memory so nothing is left." },
+  { time: 63.30, text: "One route, one hour, the same every day." },
+  { time: 67.30, text: "Until the warmth of that company found its own way." },
+  { time: 71.90, text: "Take one route. Stay." },
+  { time: 75.30, text: "Stay on." },
+  { time: 78.80, text: "So every quiet journey can mean something again." },
+  { time: 90.10, text: "Keep traveling together." }
 ];
 
 const $ = id => document.getElementById(id);
