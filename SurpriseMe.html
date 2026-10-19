@@ -349,18 +349,24 @@ document.addEventListener('fullscreenchange', syncFsButton);
 document.addEventListener('webkitfullscreenchange', syncFsButton);
 
 function unlock() {
-  if (inp.value.trim() !== PASSWORD) {                              /* wrong password */
+  if (inp.value.trim() !== PASSWORD) {                        /* wrong password */
     err.textContent = 'Incorrect password, please try again.';
     lc.classList.remove('shake'); void lc.offsetWidth; lc.classList.add('shake');
     inp.value = ''; inp.focus(); return;
   }
   unlocked = true;
-  enterFullscreen();                                                /* go full screen on the unlock tap */
+  enterFullscreen();                                           /* go full screen on the unlock tap */
   lock.classList.add('open');
   document.body.classList.remove('locked');
+  
+  // --- Auto-start and unmute the video ---
+  vid.muted = false;
+  vid.play().catch(e => console.log("Autoplay prevented:", e));
+
   document.querySelectorAll('.rv').forEach(el => io.observe(el));
   setTimeout(() => { gResize(); bgResize(); startAutoTyping(); syncFsButton(); }, 900);
 }
+   
 $('go').addEventListener('click', unlock);
 inp.addEventListener('keydown', e => { if (e.key === 'Enter') unlock(); });
 
